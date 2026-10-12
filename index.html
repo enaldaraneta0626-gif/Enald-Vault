@@ -182,6 +182,40 @@ main{overflow:auto;min-width:0}
 .filters .tog{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
 .filters .tog input{accent-color:var(--accent-2);width:16px;height:16px}
 .views{margin-bottom:8px}
+@media (min-width:761px){ #chips,#subchips{flex-wrap:wrap;overflow:visible} }
+.chip.main{border-width:1.5px}
+.chip.main.open{border-color:var(--accent-2)}
+.chipsep{flex:none;width:1px;align-self:stretch;background:var(--line);margin:4px 2px}
+.chip.organize{color:var(--accent-2);border-style:dashed}
+.chip.organize svg{width:14px;height:14px}
+.subchips{margin-top:-6px;padding:8px 10px;border-radius:12px;background:var(--surface-2);align-items:center}
+.subhead{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;padding-right:4px}
+.ghead .gp{color:var(--muted);font-weight:500}
+[data-drag]{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.lrow[data-drag]{cursor:grab}
+.lrow button,.lrow a{cursor:pointer}
+.dragging{opacity:.4}
+body.is-dragging,body.is-dragging *{cursor:grabbing!important}
+.ghost{position:fixed;left:0;top:0;z-index:1000;pointer-events:none;padding:8px 12px;border-radius:10px;background:var(--text);color:var(--bg);font-weight:600;font-size:13px;box-shadow:0 12px 30px rgba(0,0,0,.3);white-space:nowrap}
+.drop-on{outline:2px dashed var(--accent)!important;outline-offset:2px;background:var(--surface-2)!important}
+dialog.wide{width:min(900px,calc(100vw - 24px))}
+.org-main{border:1.5px dashed var(--line);border-radius:12px;padding:12px;text-align:center;font-size:13px;color:var(--muted)}
+.org-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:12px}
+.org-card{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:10px;display:grid;gap:8px;align-content:start;min-height:120px}
+.org-head{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:9px;background:var(--surface-2);cursor:grab}
+.org-head b{font:600 15px var(--display);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.org-head .n,.ochip .n{font:500 11px var(--mono);color:var(--muted)}
+.org-subs{display:flex;flex-wrap:wrap;gap:6px}
+.ochip{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;border:1px solid var(--line);background:var(--bg);font-size:13px;font-weight:600;cursor:grab}
+.ochip .x,.org-head .x{display:grid;place-items:center;width:20px;height:20px;border:0;border-radius:50%;background:transparent;color:var(--muted);padding:0}
+.ochip .x svg,.org-head .x svg{width:12px;height:12px}
+.grip{color:var(--muted);font-size:12px;line-height:1}
+.picked{outline:2px solid var(--accent-2);outline-offset:1px}
+.org-empty{font-size:12px;color:var(--muted);padding:4px}
+.org-tray{margin-top:12px;border:1px dashed var(--line);border-radius:14px;padding:10px;display:grid;gap:8px}
+.org-tray>b{font-size:13px}
+.org-add{display:flex;gap:10px;flex-wrap:wrap}
+.org-add .inp{flex:1 1 200px}
 button.badge{border:1px solid transparent;cursor:pointer;padding:0}
 button.badge:hover{border-color:var(--accent)}
 button.badge[aria-pressed="true"]{background:var(--accent-2);color:#fff}
@@ -386,6 +420,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
     <symbol id="i-dice" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><circle cx="8.5" cy="8.5" r="1" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/></symbol>
     <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
     <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
     <symbol id="i-square" viewBox="0 0 24 24"><rect x="4.5" y="4.5" width="15" height="15" rx="3"/></symbol>
     <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></symbol>
@@ -503,6 +538,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
       </div>
       <div class="chips views" id="views"></div>
       <div class="chips" id="chips"></div>
+      <div class="chips subchips" id="subchips" hidden></div>
       <div class="filters" id="filters">
         <label>File <select class="inp" id="fFile"></select></label>
         <button class="ib del" id="fFileDel" aria-label="Remove this file and its logins" title="Remove this file and its logins" hidden><svg class="i"><use href="#i-trash"/></svg></button>
@@ -731,7 +767,7 @@ function safeHref(u){ if(!u) return ''; try { const x = new URL(/^[a-z]+:\/\//i.
 const maskEmail = e => { const [l, d] = String(e).split('@'); return d ? `${l.slice(0,2)}•••@${d}` : e; };
 const cmp = (a,b) => String(a).localeCompare(String(b), undefined, { sensitivity:'base', numeric:true });
 
-function toast(msg, err){ const t = document.createElement('div'); t.className = 'toast' + (err ? ' err' : ''); t.textContent = msg; $('#toasts').append(t); setTimeout(() => t.remove(), err ? 5500 : 3600); }
+function toast(msg, err){ const box = $('#toasts'), dl = $('#dlg'), host = dl && dl.open ? dl : document.body; if(box.parentNode !== host) host.append(box); const t = document.createElement('div'); t.className = 'toast' + (err ? ' err' : ''); t.textContent = msg; $('#toasts').append(t); setTimeout(() => t.remove(), err ? 5500 : 3600); }
 async function copy(text, label){
   let ok = false;
   try { await navigator.clipboard.writeText(text); ok = true; }
@@ -882,7 +918,7 @@ function corpOf(l){
 }
 function normalize(data){
   const V = Object.assign(emptyVault(), data);
-  V.settings = Object.assign({ autolock:5, lockOnHide:false }, data.settings || {}); if(!Array.isArray(V.secure)) V.secure = [];
+  V.settings = Object.assign({ autolock:5, lockOnHide:false }, data.settings || {}); if(!Array.isArray(V.secure)) V.secure = []; seedCorps(V);
   for(const l of V.logins){
     if(!l.corp) l.corp = corpOf(l);
     if(!l.added) l.added = (V.files.find(f => f.id === l.fileId) || {}).importedAt || 0;
@@ -928,7 +964,7 @@ function showLock(mode){
     : signin ? 'Use the same username and master password as on your other device.'
     : 'Enter your username and master password to unlock.';
   $('#fineprint').textContent = mode === 'setup' ? "Right after this you'll get a recovery key to email to yourself. It's the only way back in if you forget your password." : 'AES-256 encryption, done in your browser.';
-  setTimeout(() => { const f = $(`#${mode}Form input`); f && f.focus(); }, 50);
+  setTimeout(() => { const a = document.activeElement; if(a && a.closest && a.closest('#lock form:not([hidden])')) return; const f = $(`#${mode}Form input`); f && f.focus(); }, 50);
 }
 $('#forgotBtn').addEventListener('click', () => {
   const v = readVault();
@@ -1031,6 +1067,7 @@ function openApp(){
     Object.assign(S, { view:'all', corp:'all', file:'all', note:'all', q:'' }); $('#q').value = ''; S.shown.clear();
     $('#autolock').value = String(S.vault.settings.autolock); $('#lockOnHide').checked = !!S.vault.settings.lockOnHide; $('#sq').value = '';
     bump(); setTab('logins'); renderNudge();
+    if(corpMigrated){ corpMigrated = false; save(false); }
     if(!S.meta.rc) setTimeout(() => newRecovery(true), 300);
     autoSync();
   }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 450);
@@ -1253,9 +1290,14 @@ $('#csvInput').addEventListener('change', async e => {
   importDialog(file.name, recs, dup, skipped, isBook, [...colInfo.keys()], updates);
 });
 
-function corpList(){ return [...new Set(S.vault.logins.map(l => l.corp))].sort(cmp); }
+function corpList(){ return [...new Set([...S.vault.logins.map(l => l.corp), ...Object.keys(S.vault.corpMeta || {})])].filter(Boolean).sort(cmp); }
 const corpKey = c => String(c || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-function matchCorp(c){ const k = corpKey(c); return (k && corpList().find(x => corpKey(x) === k)) || c; }
+function matchCorp(c){
+  const k = corpKey(c); if(!k) return c; const list = corpList();
+  const exact = list.find(x => corpKey(x) === k); if(exact) return exact;
+  if(k.length >= 4){ const pre = list.filter(x => { const y = corpKey(x); return y.length >= 4 && (y.startsWith(k) || k.startsWith(y)); }); if(pre.length === 1) return pre[0]; }
+  return c;
+}
 function importDialog(fname, recs, dup, skipped, isBook, cols = [], updates = []){
   const tally = key => { const t = {}; recs.forEach(r => { const k = key(r); t[k] = (t[k] || 0) + 1; }); return Object.entries(t).sort((a,b) => b[1]-a[1]).map(([c,n]) => `${esc(c)} (${n})`).join(', '); };
   const tabs = [...new Set(recs.map(r => r.tab))];
@@ -1308,16 +1350,24 @@ function renderLogins(){
     return `<button class="chip only${k === 'risk' && n ? ' alert' : ''}" data-view="${k}" aria-pressed="${S.view===k}" title="${k === 'risk' ? 'Weak, reused, or not changed in over a year' : ''}">${k === 'fav' ? icon('star') : ''}${t} <span class="n">${n}</span></button>`; }).join('');
   const inView = L.filter(VIEWS[S.view]);
 
-  // corp chips
+  // corp chips: main corps first, then corps not grouped yet; a second row lists the open main corp's subcorps
   const counts = {}; inView.forEach(l => counts[l.corp] = (counts[l.corp] || 0) + 1);
-  if(S.corp !== 'all' && !counts[S.corp]) S.corp = 'all';
-  const corps = Object.keys(counts).sort((a,b) => counts[b] - counts[a] || cmp(a,b));
-  $('#chips').innerHTML = `<button class="chip only" data-corp="all" aria-pressed="${S.corp==='all'}">All corps <span class="n">${inView.length}</span></button>` +
-    corps.map(c => `<span class="chip" aria-pressed="${S.corp===c}"><button style="all:unset;cursor:pointer;display:inline-flex;gap:8px;align-items:center" data-corp="${esc(c)}">${esc(c)} <span class="n">${counts[c]}</span></button><button class="x" data-rename="${esc(c)}" aria-label="Rename ${esc(c)}" title="Rename corp">${icon('edit')}</button></span>`).join('');
+  const total = c => (counts[c] || 0) + (isMain(c) ? subsOf(c).reduce((t, s) => t + (counts[s] || 0), 0) : 0);
+  if(S.corp !== 'all' && !corpNames().includes(S.corp)) S.corp = 'all';
+  const chip = (c, n, cls = '') => `<span class="chip${cls}" data-drag="corp" data-name="${esc(c)}" data-drop="chip" data-corpname="${esc(c)}" aria-pressed="${S.corp===c}"><button style="all:unset;cursor:pointer;display:inline-flex;gap:8px;align-items:center" data-corp="${esc(c)}">${esc(c)} <span class="n">${n}</span></button><button class="x" data-rename="${esc(c)}" aria-label="Rename ${esc(c)}" title="Rename corp">${icon('edit')}</button></span>`;
+  const selMain = S.corp === 'all' ? null : isMain(S.corp) ? S.corp : parentOf(S.corp);
+  const lo = loose().filter(c => counts[c]);
+  $('#chips').innerHTML = `<button class="chip only" data-corp="all" aria-pressed="${S.corp==='all'}">All corps <span class="n">${inView.length}</span></button>`
+    + mains().map(m => chip(m, total(m), ' main' + (selMain === m && S.corp !== m ? ' open' : ''))).join('')
+    + (lo.length ? '<span class="chipsep" aria-hidden="true"></span>' + lo.map(c => chip(c, counts[c])).join('') : '')
+    + `<button class="chip only organize" data-organize>${icon('grid')}Organize</button>`;
+  const subs = selMain ? subsOf(selMain) : [];
+  $('#subchips').hidden = !selMain || !subs.length || !L.length;
+  $('#subchips').innerHTML = selMain ? `<span class="subhead">Inside ${esc(selMain)}</span><button class="chip only" data-corp="${esc(selMain)}" aria-pressed="${S.corp===selMain}">All of ${esc(selMain)} <span class="n">${total(selMain)}</span></button>` + subs.map(s => chip(s, counts[s] || 0)).join('') : '';
   $('#views').hidden = $('#chips').hidden = $('#filters').hidden = !L.length;
 
   // filter selects
-  const inCorp = inView.filter(l => S.corp === 'all' || l.corp === S.corp);
+  const inCorp = inView.filter(l => S.corp === 'all' || l.corp === S.corp || (isMain(S.corp) && parentOf(l.corp) === S.corp));
   const fileIds = [...new Set(inCorp.map(l => l.fileId))];
   $('#fFile').innerHTML = `<option value="all">All files</option>` + V.files.filter(f => fileIds.includes(f.id)).map(f => `<option value="${f.id}">${esc(f.name)}</option>`).join('') + (fileIds.includes('manual') ? `<option value="manual">Added by hand</option>` : '');
   $('#fFile').value = fileIds.includes(S.file) ? S.file : 'all'; if($('#fFile').value !== S.file) S.file = 'all';
@@ -1346,7 +1396,7 @@ function renderLogins(){
   const row = l => { const href = safeHref(l.url), shown = S.shown.has(l.id), rc = reuse.get(l.password) || 0, weak = isWeak(l.password), soc = socialOf(l);
     const old = isOld(l), sel = S.sel.has(l.id);
     const hw = weak ? `<span class="hw" title="Short or easy to guess">Weak</span>` : rc > 1 ? `<span class="hw" title="Same password on ${rc} accounts">Reused ×${rc}</span>` : old ? `<span class="hw old" title="Not changed in over a year">1 yr+</span>` : '';
-    return `<li class="lrow" data-id="${l.id}">
+    return `<li class="lrow" data-id="${l.id}" data-drag="login">
       <button class="badge" data-act="sel" aria-pressed="${sel}" aria-label="${sel ? 'Deselect' : 'Select'} ${esc(l.name)}">${sel ? icon('check') : esc((l.name[0] || '?').toUpperCase())}</button>
       <div class="who"><div class="nm" title="${esc(l.name)}">${esc(l.name)}</div>${href ? `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(hostOf(l.url))}</a>` : `<span class="src">${esc(soc && soc !== 'Social' ? soc : fileName(l.fileId))}</span>`}${l.totp ? `<button class="otp mono" data-act="otp" data-otp="${l.id}" title="Copy 2FA code">··· ···</button>` : ''}</div>
       <div class="desccell" title="${esc(l.desc || '')}">${esc(l.desc || '')}</div>
@@ -1356,13 +1406,13 @@ function renderLogins(){
       <div class="notecell" title="${esc(l.notes)}">${esc(noteKey(l))}${String(l.notes || '').includes('\n') ? ' <span class="more">+more</span>' : ''}</div>
       <div class="acts">${href ? `<button class="ib" data-act="go" aria-label="Copy password and open site" title="Copy password and open site">${icon('ext')}</button>` : ''}<button class="ib star" data-act="fav" aria-pressed="${!!l.fav}" aria-label="${l.fav ? 'Remove from favorites' : 'Add to favorites'}">${icon('star')}</button><button class="ib" data-act="ed" aria-label="Edit">${icon('edit')}</button><button class="ib del" data-act="dl" aria-label="Delete">${icon('trash')}</button></div>
     </li>`; };
-  const head = (t, n, cls = '') => `<li class="ghead${cls}">${t} <span class="n">${n}</span></li>`;
+  const head = (t, n, cls = '', corp) => `<li class="ghead${cls}"${corp ? ` data-drop="chip" data-corpname="${esc(corp)}"` : ''}>${t} <span class="n">${n}</span></li>`;
   let body = '';
   const favs = S.view === 'fav' ? [] : rows.filter(l => l.fav), rest = S.view === 'fav' ? rows : rows.filter(l => !l.fav);
   if(S.group && S.corp === 'all' && S.sort !== 'corp'){
     if(favs.length) body += head(`${icon('star')}Favorites`, favs.length, ' fav') + favs.map(row).join('');
     const groups = {}; rest.forEach(l => (groups[l.corp] ||= []).push(l));
-    Object.keys(groups).sort(cmp).forEach(c => { body += head(esc(c), groups[c].length) + groups[c].map(row).join(''); });
+    Object.keys(groups).sort(corpRankCmp).forEach(c => { const p = parentOf(c); body += head(p ? `<span class="gp">${esc(p)} ›</span> ${esc(c)}` : esc(c), groups[c].length, '', c) + groups[c].map(row).join(''); });
   } else body = [...favs, ...rest].map(row).join('');
   renderBulk();
   list.innerHTML = `<ul class="list"><li class="lhead"><button class="selall" data-act="selall" aria-label="Select all shown" title="Select all shown">${icon(rows.every(l => S.sel.has(l.id)) ? 'check' : 'square')}</button>${th('name','Account')}${th('desc','Description')}${th('corp','Corp')}${th('username','Username')}<span>Password</span>${th('notes','Note')}<span></span></li>${body}</ul>`;
@@ -1382,7 +1432,8 @@ $('#fFileDel').addEventListener('click', () => {
 });
 
 $('#v-logins').addEventListener('click', e => {
-  const t = e.target.closest('[data-view],[data-corp],[data-rename],[data-act],[data-sortby]'); if(!t) return;
+  const t = e.target.closest('[data-view],[data-corp],[data-rename],[data-act],[data-sortby],[data-organize]'); if(!t) return;
+  if(t.dataset.organize !== undefined) return organizeDialog();
   if(t.dataset.view){ S.view = t.dataset.view; S.corp = 'all'; S.file = 'all'; S.note = 'all'; S.shown.clear(); return renderLogins(); }
   const V = S.vault;
   if(t.dataset.corp !== undefined){ S.corp = t.dataset.corp; S.file = 'all'; S.note = 'all'; S.shown.clear(); return renderLogins(); }
@@ -1392,7 +1443,7 @@ $('#v-logins').addEventListener('click', e => {
     return openDialog(`<h3>Rename corp</h3><p class="muted" style="margin:0">Renames it on every login in <b>${esc(old)}</b>. Using an existing corp's name merges the two.</p>
       <input class="inp" name="corp" value="${esc(old)}" list="corpDL2" required><datalist id="corpDL2">${corpList().map(c => `<option value="${esc(c)}">`).join('')}</datalist>
       <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Rename</button></div>`,
-      async fd => { const nn = clean(fd.get('corp')); if(!nn) return false; V.logins.forEach(l => { if(l.corp === old) l.corp = nn; }); if(S.corp === old) S.corp = nn; await save(); render(); toast(`Renamed to ${nn}.`); });
+      async fd => { const nn = clean(fd.get('corp')); if(!nn) return false; renameCorpIn(V, old, nn); if(S.corp === old) S.corp = nn; await save(); render(); toast(`Renamed to ${nn}.`); });
   }
   const act = t.dataset.act;
   if(act === 'import') return $('#csvInput').click();
@@ -1855,6 +1906,180 @@ addEventListener('keydown', e => {
 });
 document.addEventListener('visibilitychange', () => { if(document.hidden && S.key && S.vault && S.vault.settings.lockOnHide) lock('Locked when you left the page.'); });
 $('#lockOnHide').addEventListener('change', async e => { S.vault.settings.lockOnHide = e.target.checked; await save(false); toast(e.target.checked ? 'The vault now locks when you switch away.' : 'The vault stays open when you switch away, until auto-lock.'); });
+
+/* ============ CORP HIERARCHY (main corps and subcorps) ============ */
+let corpMigrated = false;
+const CM = () => S.vault.corpMeta || (S.vault.corpMeta = {});
+const cmeta = n => CM()[n] || {};
+const censure = n => (CM()[n] ||= { parent:null, main:false, order:999 });
+const isMain = n => !!cmeta(n).main;
+const parentOf = n => { const p = cmeta(n).parent; return p && isMain(p) ? p : null; };
+function corpNames(){ const s = new Set(S.vault.logins.map(l => l.corp)); Object.keys(CM()).forEach(k => s.add(k)); return [...s].filter(Boolean); }
+const byOrder = (a, b) => (cmeta(a).order ?? 999) - (cmeta(b).order ?? 999) || cmp(a, b);
+function mains(){ return corpNames().filter(isMain).sort(byOrder); }
+function subsOf(m){ return corpNames().filter(n => !isMain(n) && parentOf(n) === m).sort(byOrder); }
+function loose(){ return corpNames().filter(n => !isMain(n) && !parentOf(n)).sort(cmp); }
+function renumber(){ mains().forEach((m, i) => { censure(m).order = i; subsOf(m).forEach((s, j) => censure(s).order = j); }); }
+function corpRank(c){ const p = parentOf(c); if(isMain(c)) return [cmeta(c).order ?? 999, -1, '']; if(p) return [cmeta(p).order ?? 999, cmeta(c).order ?? 999, '']; return [1e5, 0, c.toLowerCase()]; }
+const corpRankCmp = (a, b) => { const x = corpRank(a), y = corpRank(b); return x[0] - y[0] || x[1] - y[1] || cmp(x[2], y[2]) || cmp(a, b); };
+function makeMain(x, before){
+  const e = censure(x); e.main = true; e.parent = null;
+  const list = mains().filter(m => m !== x), i = before ? list.indexOf(before) : -1;
+  list.splice(i < 0 ? list.length : i, 0, x); list.forEach((m, j) => censure(m).order = j);
+}
+function makeSub(x, m, before){
+  if(!x || !m || x === m) return false;
+  if(!isMain(m)) makeMain(m);
+  subsOf(x).forEach(k => censure(k).parent = m);           // a subcorp can't have its own subcorps
+  const e = censure(x); e.main = false; e.parent = m;
+  const list = subsOf(m).filter(s => s !== x), i = before ? list.indexOf(before) : -1;
+  list.splice(i < 0 ? list.length : i, 0, x); list.forEach((s, j) => censure(s).order = j);
+  return true;
+}
+function ungroup(x){ subsOf(x).forEach(k => censure(k).parent = null); const e = censure(x); e.main = false; e.parent = null; }
+function renameCorpIn(V, old, nn){
+  if(!old || !nn || old === nn) return;
+  V.logins.forEach(l => { if(l.corp === old) l.corp = nn; });
+  const M = V.corpMeta || (V.corpMeta = {});
+  if(M[old]){ if(!M[nn]) M[nn] = M[old]; else if(M[old].main) M[nn].main = true; delete M[old]; }
+  Object.values(M).forEach(m => { if(m.parent === old) m.parent = nn; });
+}
+function seedCorps(V){
+  V.corpMeta = V.corpMeta && typeof V.corpMeta === 'object' ? V.corpMeta : {};
+  if(V.settings.corpSeeded) return;
+  const names = new Set(V.logins.map(l => l.corp));
+  if(names.has('Robuso') && !names.has('Robuso Ventures')) renameCorpIn(V, 'Robuso', 'Robuso Ventures');
+  ['Robuso Ventures', 'BWM', 'Verified Digital'].forEach((n, i) => { V.corpMeta[n] = { ...(V.corpMeta[n] || {}), main:true, parent:null, order:i }; });
+  V.settings.corpSeeded = true; corpMigrated = true;
+}
+
+function moveLogins(ids, corp){
+  const set = new Set(ids); let n = 0;
+  S.vault.logins.forEach(l => { if(set.has(l.id) && l.corp !== corp){ l.corp = corp; n++; } });
+  if(!n) return;
+  S.sel.clear(); save(); render();
+  const p = parentOf(corp); toast(`Moved ${n} login${n > 1 ? 's' : ''} to ${p ? p + ' › ' : ''}${corp}.`);
+}
+function handleDrop(pl, el){
+  const kind = el.dataset.drop, target = el.dataset.corpname;
+  if(pl.type === 'login'){ if(kind === 'chip' && target) moveLogins(pl.ids, target); return; }
+  const x = pl.name; let msg = '';
+  if(kind === 'chip'){
+    if(x === target) return;
+    const p = parentOf(target), m = isMain(target) ? target : p || target;
+    if(x === m) return;
+    makeSub(x, m, p ? target : null); msg = `${x} is now under ${m}.`;
+  } else if(kind === 'org-main'){ makeMain(x); msg = `${x} is now a main corp.`; }
+  else if(kind === 'org-into'){ if(x === target) return; makeSub(x, target); msg = `${x} is now under ${target}.`; }
+  else if(kind === 'org-before'){ if(x === target) return; if(isMain(x)){ makeMain(x, target); msg = `Moved ${x}.`; } else { makeSub(x, target); msg = `${x} is now under ${target}.`; } }
+  else if(kind === 'org-subbefore'){ if(x === target) return; const p = parentOf(target); if(p){ if(x === p) return; makeSub(x, p, target); msg = `${x} is now under ${p}.`; } else { ungroup(x); msg = `${x} is no longer grouped.`; } }
+  else if(kind === 'org-ungroup'){ ungroup(x); msg = `${x} is no longer grouped.`; }
+  else return;
+  renumber(); save(); render(); if($('#orgBody')) refreshOrg(); toast(msg);
+}
+
+/* ---------- organizer ---------- */
+function orgHTML(){
+  const counts = {}; S.vault.logins.forEach(l => counts[l.corp] = (counts[l.corp] || 0) + 1);
+  const tot = m => (counts[m] || 0) + subsOf(m).reduce((t, s) => t + (counts[s] || 0), 0);
+  const del = c => !counts[c] && !subsOf(c).length ? `<button type="button" class="x" data-orgdel="${esc(c)}" aria-label="Remove ${esc(c)}" title="Remove empty corp">${icon('x')}</button>` : '';
+  const pill = c => `<span class="ochip${S.orgPick === c ? ' picked' : ''}" data-drag="corp" data-name="${esc(c)}" data-drop="org-subbefore" data-corpname="${esc(c)}" role="button" tabindex="0"><span class="grip" aria-hidden="true">⠿</span>${esc(c)} <span class="n">${counts[c] || 0}</span>${del(c)}</span>`;
+  return `<div class="org-main" data-drop="org-main">Drop a corp here to make it a main corp</div>
+    <div class="org-grid">${mains().map(m => `<div class="org-card" data-drop="org-into" data-corpname="${esc(m)}">
+      <div class="org-head${S.orgPick === m ? ' picked' : ''}" data-drag="corp" data-name="${esc(m)}" data-drop="org-before" data-corpname="${esc(m)}" role="button" tabindex="0"><span class="grip" aria-hidden="true">⠿</span><b>${esc(m)}</b><span class="n">${tot(m)}</span>${del(m)}</div>
+      <div class="org-subs">${subsOf(m).map(pill).join('') || '<span class="org-empty">Drop subcorps here</span>'}</div></div>`).join('')}</div>
+    <div class="org-tray" data-drop="org-ungroup"><b>Not grouped yet</b><div class="org-subs">${loose().map(pill).join('') || '<span class="org-empty">Every corp is grouped</span>'}</div></div>`;
+}
+function refreshOrg(){
+  $('#orgBody').innerHTML = orgHTML();
+  $('#orgHint').textContent = S.orgPick ? `Now tap where ${S.orgPick} should go: a main corp's box, the top strip, or Not grouped yet. Tap it again to cancel.` : 'Drag corps to arrange them, or tap a corp and then tap where it should go. Dropping on a main corp makes it a subcorp.';
+}
+function organizeDialog(){
+  S.orgPick = null;
+  openDialog(`<h3>Organize corps</h3><p class="muted" id="orgHint" style="margin:0"></p><div id="orgBody"></div>
+    <div class="org-add"><input class="inp" id="orgNew" placeholder="New main corp name" autocomplete="off"><button type="button" class="btn" id="orgAdd">${icon('plus')}Add main corp</button></div>
+    <div class="foot"><button class="btn primary" value="ok">Done</button></div>`, () => { S.orgPick = null; render(); });
+  dlg.classList.add('wide'); refreshOrg();
+  dform.onclick = e => {
+    if(DND.suppress) return;
+    const d = e.target.closest('[data-orgdel]');
+    if(d){ const c = d.dataset.orgdel; ungroup(c); delete CM()[c]; renumber(); save(); refreshOrg(); render(); return toast(`Removed ${c}.`); }
+    if(e.target.closest('#orgAdd')){ const n = clean($('#orgNew').value); if(!n) return toast('Type a name for the new main corp.', true);
+      const ex = matchCorp(n); makeMain(ex); renumber(); save(); $('#orgNew').value = ''; refreshOrg(); render(); return toast(`${ex} is now a main corp.`); }
+    const chipEl = e.target.closest('[data-drag="corp"]');
+    if(!S.orgPick){ if(chipEl){ S.orgPick = chipEl.dataset.name; refreshOrg(); } return; }
+    const pick = S.orgPick, t = e.target.closest('[data-drop]'); S.orgPick = null;
+    if(t && !(t.dataset.corpname === pick && t.dataset.drop !== 'org-main' && t.dataset.drop !== 'org-ungroup')) handleDrop({ type:'corp', name:pick }, t); else refreshOrg();
+  };
+}
+dlg.addEventListener('close', () => { dlg.classList.remove('wide'); S.orgPick = null; });
+
+/* ---------- drag and drop (mouse, touch and pen) ----------
+   Mouse: press and move. Touch: press and hold for a moment, then drag. */
+const DND = { p:null, active:false, ghost:null, over:null, timer:0, suppress:false, payload:null, scroller:null };
+function dragPayload(src){
+  if(src.dataset.drag === 'login'){
+    const id = src.dataset.id, ids = S.sel.has(id) && S.sel.size > 1 ? [...S.sel] : [id], l = S.vault.logins.find(x => x.id === id);
+    return { type:'login', ids, label: ids.length > 1 ? `Move ${ids.length} logins` : `Move ${l ? l.name : 'login'}` };
+  }
+  return { type:'corp', name:src.dataset.name, label:src.dataset.name };
+}
+function accepts(t){
+  const k = t.dataset.drop, pl = DND.payload, inDlg = !!t.closest('dialog');
+  if(pl.type === 'login') return k === 'chip' && !inDlg;
+  return k.startsWith('org-') ? inDlg : (k === 'chip' && !inDlg && t.dataset.corpname !== pl.name);
+}
+function startDrag(x, y){
+  const p = DND.p; if(!p || !S.key) return;
+  DND.active = true; DND.payload = dragPayload(p.src); p.src.classList.add('dragging'); document.body.classList.add('is-dragging');
+  const g = document.createElement('div'); g.className = 'ghost'; g.textContent = DND.payload.label; (dlg.open ? dlg : document.body).append(g); DND.ghost = g;
+  DND.scroller = p.src.closest('dialog') || $('main');
+  try { navigator.vibrate && navigator.vibrate(12); } catch(e){}
+  moveDrag(x, y);
+}
+function moveDrag(x, y){
+  DND.ghost.style.transform = `translate(${x + 14}px, ${y + 14}px)`;
+  const el = document.elementFromPoint(x, y), t = el && el.closest('[data-drop]'), ok = t && accepts(t) ? t : null;
+  if(DND.over && DND.over !== ok) DND.over.classList.remove('drop-on');
+  DND.over = ok; if(ok) ok.classList.add('drop-on');
+  const row = el && el.closest('.chips'); if(row){ const r = row.getBoundingClientRect(); if(x > r.right - 44) row.scrollLeft += 16; else if(x < r.left + 44) row.scrollLeft -= 16; }
+  const sc = DND.scroller; if(sc){ const r = sc.getBoundingClientRect(); if(y < r.top + 56) sc.scrollTop -= 14; else if(y > r.bottom - 56) sc.scrollTop += 14; }
+}
+function cleanupDrag(){
+  DND.active = false; if(DND.ghost) DND.ghost.remove(); DND.ghost = null;
+  if(DND.over) DND.over.classList.remove('drop-on'); DND.over = null;
+  document.body.classList.remove('is-dragging'); $$('.dragging').forEach(x => x.classList.remove('dragging'));
+}
+function endDrag(e, drop){
+  const p = DND.p; if(!p || (e && e.pointerId !== p.id)) return;
+  clearTimeout(DND.timer); DND.p = null;
+  if(!DND.active) return;
+  const t = DND.over, pl = DND.payload; cleanupDrag();
+  DND.suppress = true; setTimeout(() => DND.suppress = false, 0);
+  if(drop && t) handleDrop(pl, t);
+}
+document.addEventListener('pointerdown', e => {
+  if(!S.key || e.button !== 0 || DND.active) return;
+  const src = e.target.closest('[data-drag]'); if(!src) return;
+  if(e.target.closest('[data-act],.x,a,input,select,textarea,[data-orgdel],.otp')) return;
+  DND.p = { src, x:e.clientX, y:e.clientY, id:e.pointerId, touch:e.pointerType !== 'mouse' };
+  if(DND.p.touch) DND.timer = setTimeout(() => startDrag(DND.p ? DND.p.x : e.clientX, DND.p ? DND.p.y : e.clientY), 380);
+});
+document.addEventListener('pointermove', e => {
+  const p = DND.p; if(!p || e.pointerId !== p.id) return;
+  if(!DND.active){
+    const d = Math.hypot(e.clientX - p.x, e.clientY - p.y);
+    if(p.touch){ if(d > 8){ clearTimeout(DND.timer); DND.p = null; } return; }
+    if(d < 6) return; startDrag(e.clientX, e.clientY);
+  }
+  moveDrag(e.clientX, e.clientY);
+});
+addEventListener('pointerup', e => endDrag(e, true));
+addEventListener('pointercancel', e => { if(DND.p && e.pointerId === DND.p.id){ clearTimeout(DND.timer); DND.p = null; if(DND.active) cleanupDrag(); } });
+document.addEventListener('touchmove', e => { if(DND.active) e.preventDefault(); }, { passive:false });
+document.addEventListener('contextmenu', e => { if(DND.active || DND.p) e.preventDefault(); });
+document.addEventListener('click', e => { if(DND.suppress){ e.stopPropagation(); e.preventDefault(); } }, true);
+addEventListener('keydown', e => { if(e.key === 'Escape' && DND.active){ cleanupDrag(); DND.p = null; } }, true);
 
 /* ---------- start ---------- */
 if(!window.crypto || !crypto.subtle){
