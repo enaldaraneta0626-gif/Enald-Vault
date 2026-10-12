@@ -165,7 +165,7 @@ main{overflow:auto;min-width:0}
 
 /* Logins list */
 .list{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
-.lrow,.lhead{display:grid;grid-template-columns:38px minmax(0,1.35fr) minmax(0,.8fr) minmax(0,1.1fr) minmax(0,1.15fr) minmax(0,.6fr) 140px;gap:14px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
+.lrow,.lhead{display:grid;grid-template-columns:38px minmax(0,1.25fr) minmax(0,1fr) minmax(0,.75fr) minmax(0,1fr) minmax(0,1.1fr) minmax(0,.6fr) 140px;gap:12px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
 .lrow:first-child,.lhead{border-top:0}
 .lhead{padding-top:10px;padding-bottom:10px;background:var(--surface-2);font-size:12px;color:var(--muted);font-weight:600;position:sticky;top:0;z-index:1}
 .lhead button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:4px;border-radius:4px}
@@ -188,6 +188,7 @@ button.badge[aria-pressed="true"]{background:var(--accent-2);color:#fff}
 button.badge svg{width:18px;height:18px}
 .selall{all:unset;cursor:pointer;width:38px;display:grid;place-items:center;color:var(--muted)}
 .selall:focus-visible{outline:2px solid var(--accent)}
+.desccell{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .who .desc{display:block;font-size:13px;color:var(--text);opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .notecell .more{font-size:11px;color:var(--accent-2);font-weight:600}
 .colmap{display:grid;gap:6px;font-size:13px;padding:12px;border-radius:12px;background:var(--surface-2)}
@@ -337,7 +338,8 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
   .bulk{bottom:8px}
   .nav{padding:7px 4px}
   .lrow{grid-template-columns:38px minmax(0,1fr) auto;row-gap:6px}
-  .lrow .fld,.lrow .corpcell,.lrow .notecell{grid-column:2/4}
+  .lrow .fld,.lrow .corpcell,.lrow .notecell,.lrow .desccell{grid-column:2/4}
+  .lrow .desccell:empty{display:none}
   .lrow .notecell:empty{display:none}
   .lrow .acts{grid-column:3;grid-row:1}
   .resultcount{width:100%;margin-left:0}
@@ -433,6 +435,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
       <button class="btn primary" type="submit" id="unlockBtn">Unlock vault</button>
       <p class="lock-msg" id="unlockMsg" role="alert"></p>
       <button type="button" class="linkbtn" id="forgotBtn">Forgot password?</button>
+      <button type="button" class="linkbtn" id="newVaultBtn" hidden>New to Nightvault? Create a vault</button>
     </form>
 
     <form class="lock-form" id="recoverForm" autocomplete="off" hidden>
@@ -456,6 +459,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
       <p class="caps" hidden>Caps Lock is on</p>
       <button class="btn primary" type="submit" id="setupBtn">Create vault</button>
       <p class="lock-msg" id="setupMsg" role="alert"></p>
+      <button type="button" class="linkbtn" id="haveVaultBtn">Already have a vault? Sign in</button>
     </form>
 
     <p class="fineprint" id="fineprint">AES-256 encryption, done in your browser.</p>
@@ -495,7 +499,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
         <input type="file" id="csvInput" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
       </div>
       <div class="toolbar">
-        <div class="search"><svg class="i"><use href="#i-search"/></svg><input class="inp" id="q" type="search" placeholder="Search name, site, username or notes" autocomplete="off"></div>
+        <div class="search"><svg class="i"><use href="#i-search"/></svg><input class="inp" id="q" type="search" placeholder="Search name, description, username or notes" autocomplete="off"></div>
       </div>
       <div class="chips views" id="views"></div>
       <div class="chips" id="chips"></div>
@@ -684,7 +688,7 @@ async function encryptJSON(key, obj){ const iv = rand(12); const ct = await cryp
 async function decryptJSON(key, iv, ct){ return JSON.parse(td.decode(await crypto.subtle.decrypt({name:'AES-GCM', iv:fromB64(iv)}, key, fromB64(ct)))); }
 async function setDek(dek){ S.dek = dek; S.key = await crypto.subtle.importKey('raw', dek, 'AES-GCM', false, ['encrypt','decrypt']); }
 const readVault = () => { try { return JSON.parse(store.get(VKEY) || 'null'); } catch(e){ return null; } };
-const metaOf = v => ({ v:2, pw:v.pw, rc:v.rc || null, rcTo:Array.isArray(v.rcTo) ? v.rcTo : DEFAULT_RC.slice(), rcAt:v.rcAt || 0, rev:v.rev || 0, at:v.at || 0, sync:!!v.sync });
+const metaOf = v => ({ v:2, pw:v.pw, rc:v.rc || null, rcTo:Array.isArray(v.rcTo) ? v.rcTo : DEFAULT_RC.slice(), rcAt:v.rcAt || 0, rev:v.rev || 0, at:v.at || 0, sync:!!v.sync, syncOptOut:!!v.syncOptOut });
 const uid = () => toB64(rand(9)).replace(/[+/=]/g, c => ({'+':'a','/':'b','=':''}[c]));
 
 /* Crockford base32 for the recovery key: no I, L, O or U, so it's easy to read and type. */
@@ -910,14 +914,18 @@ function busyDial(on){ $('#dial').classList.toggle('busy', on); }
 
 function showLock(mode){
   const v = readVault();
-  mode = mode || (v ? 'unlock' : 'setup');
+  mode = mode || (v ? 'unlock' : 'signin');
+  const signin = mode === 'signin'; if(signin) mode = 'unlock';
   $('#app').hidden = true; $('#lock').hidden = false; $('#lock').classList.remove('leaving'); $('#dial').classList.remove('open','busy','fail'); $('#ringNum').style.transform = ''; $$('#lock .caps').forEach(c => c.hidden = true); tickClock();
-  $('#lockTitle').textContent = mode === 'setup' ? 'Create your vault' : mode === 'recover' ? 'Reset your password' : 'Welcome back';
+  $('#lockTitle').textContent = mode === 'setup' ? 'Create your vault' : mode === 'recover' ? 'Reset your password' : signin ? 'Sign in' : 'Welcome back';
+  $('#forgotBtn').hidden = signin; $('#newVaultBtn').hidden = !signin;
+  $('#unlockBtn').textContent = signin ? 'Sign in' : 'Unlock vault';
   $('#unlockForm').hidden = mode !== 'unlock'; $('#setupForm').hidden = mode !== 'setup'; $('#recoverForm').hidden = mode !== 'recover';
   $$('#lock form').forEach(f => f.reset()); $$('.lock-msg').forEach(m => m.textContent = '');
   const to = v && v.rcTo ? v.rcTo : DEFAULT_RC;
   $('#lockSub').textContent = mode === 'setup' ? 'Only the username and password you choose here will open it.'
     : mode === 'recover' ? `Paste the recovery key that was emailed to ${to.map(maskEmail).join(' and ')}, then choose a new password.`
+    : signin ? 'Use the same username and master password as on your other device.'
     : 'Enter your username and master password to unlock.';
   $('#fineprint').textContent = mode === 'setup' ? "Right after this you'll get a recovery key to email to yourself. It's the only way back in if you forget your password." : 'AES-256 encryption, done in your browser.';
   setTimeout(() => { const f = $(`#${mode}Form input`); f && f.focus(); }, 50);
@@ -928,6 +936,9 @@ $('#forgotBtn').addEventListener('click', () => {
   showLock('recover');
 });
 $('#backBtn').addEventListener('click', () => showLock('unlock'));
+$('#newVaultBtn').addEventListener('click', () => showLock('setup'));
+$('#haveVaultBtn').addEventListener('click', () => showLock(readVault() ? 'unlock' : 'signin'));
+function foundSynced(){ $('#lockTitle').textContent = 'Welcome back'; $('#lockSub').textContent = 'Found your vault. Enter your username and master password.'; $('#forgotBtn').hidden = false; $('#newVaultBtn').hidden = true; }
 
 $$('[data-peek]').forEach(b => b.addEventListener('click', () => {
   const inp = b.closest('.pw-wrap').querySelector('input'), show = inp.type === 'password';
@@ -963,8 +974,16 @@ $('#unlockForm').addEventListener('submit', async e => {
   e.preventDefault();
   const f = e.target, msg = $('#unlockMsg'), user = f.user.value.trim(), pass = f.pass.value;
   const w = waitLeft(); if(w){ msg.textContent = `Too many attempts. Try again in ${Math.ceil(w/1000)} seconds.`; return failAnim(); }
-  const v = readVault(); if(!v) return showLock();
-  const btn = $('#unlockBtn'); btn.disabled = true; btn.textContent = 'Decrypting…'; busyDial(true); msg.textContent = '';
+  const btn = $('#unlockBtn'), label = btn.textContent;
+  let v = readVault();
+  if(!v){
+    btn.disabled = true; btn.textContent = 'Finding your vault…'; busyDial(true); msg.textContent = '';
+    await syncChecked; v = readVault();
+    btn.disabled = false; btn.textContent = label; busyDial(false);
+    if(!v){ msg.textContent = SYNC.ready ? "No vault found for this Claude account yet. Open Nightvault on your computer once so it can sync, then try again." : "This view can't reach your synced vault. Open Nightvault in the Claude app or on claude.ai while signed in to your account."; return failAnim(); }
+    foundSynced();
+  }
+  btn.disabled = true; btn.textContent = 'Decrypting…'; busyDial(true); msg.textContent = '';
   try {
     if(v.v === 2){
       const dek = await unwrap(await pwKek(user, pass, fromB64(v.pw.salt), v.pw.iter), v.pw);
@@ -980,7 +999,7 @@ $('#unlockForm').addEventListener('submit', async e => {
   } catch(err){
     S.key = null; S.dek = null; f.pass.value = ''; failAnim();
     const w2 = addFail(); msg.textContent = w2 ? `Incorrect. Locked for ${Math.ceil(w2/1000)} seconds.` : 'Username or password is incorrect.';
-  } finally { btn.disabled = false; btn.textContent = 'Unlock vault'; busyDial(false); }
+  } finally { btn.disabled = false; btn.textContent = $('#forgotBtn').hidden ? 'Sign in' : 'Unlock vault'; busyDial(false); }
 });
 
 $('#recoverForm').addEventListener('submit', async e => {
@@ -1013,6 +1032,7 @@ function openApp(){
     $('#autolock').value = String(S.vault.settings.autolock); $('#lockOnHide').checked = !!S.vault.settings.lockOnHide; $('#sq').value = '';
     bump(); setTab('logins'); renderNudge();
     if(!S.meta.rc) setTimeout(() => newRecovery(true), 300);
+    autoSync();
   }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 450);
 }
 
@@ -1328,7 +1348,8 @@ function renderLogins(){
     const hw = weak ? `<span class="hw" title="Short or easy to guess">Weak</span>` : rc > 1 ? `<span class="hw" title="Same password on ${rc} accounts">Reused ×${rc}</span>` : old ? `<span class="hw old" title="Not changed in over a year">1 yr+</span>` : '';
     return `<li class="lrow" data-id="${l.id}">
       <button class="badge" data-act="sel" aria-pressed="${sel}" aria-label="${sel ? 'Deselect' : 'Select'} ${esc(l.name)}">${sel ? icon('check') : esc((l.name[0] || '?').toUpperCase())}</button>
-      <div class="who"><div class="nm" title="${esc(l.name)}">${esc(l.name)}</div>${l.desc ? `<span class="desc" title="${esc(l.desc)}">${esc(l.desc)}</span>` : ''}${href ? `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(hostOf(l.url))}</a>` : (l.desc ? '' : `<span class="src">${esc(soc && soc !== 'Social' ? soc : fileName(l.fileId))}</span>`)}${l.totp ? `<button class="otp mono" data-act="otp" data-otp="${l.id}" title="Copy 2FA code">··· ···</button>` : ''}</div>
+      <div class="who"><div class="nm" title="${esc(l.name)}">${esc(l.name)}</div>${href ? `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(hostOf(l.url))}</a>` : `<span class="src">${esc(soc && soc !== 'Social' ? soc : fileName(l.fileId))}</span>`}${l.totp ? `<button class="otp mono" data-act="otp" data-otp="${l.id}" title="Copy 2FA code">··· ···</button>` : ''}</div>
+      <div class="desccell" title="${esc(l.desc || '')}">${esc(l.desc || '')}</div>
       <div class="corpcell"><span class="pill" title="${esc(l.corp)}">${esc(l.corp)}</span></div>
       <div class="fld"><span class="lbl">Username</span><span class="v" title="${esc(l.username)}">${esc(l.username) || '<span class="muted">—</span>'}</span>${l.username ? `<button class="ib" data-act="cu" aria-label="Copy username">${icon('copy')}</button>` : ''}</div>
       <div class="fld"><span class="lbl">Password</span><span class="v mono">${shown ? esc(l.password) : '••••••••••'}</span>${hw}<button class="ib" data-act="rv" aria-label="${shown?'Hide':'Show'} password">${icon(shown?'eyeoff':'eye')}</button><button class="ib" data-act="cp" aria-label="Copy password">${icon('copy')}</button></div>
@@ -1344,7 +1365,7 @@ function renderLogins(){
     Object.keys(groups).sort(cmp).forEach(c => { body += head(esc(c), groups[c].length) + groups[c].map(row).join(''); });
   } else body = [...favs, ...rest].map(row).join('');
   renderBulk();
-  list.innerHTML = `<ul class="list"><li class="lhead"><button class="selall" data-act="selall" aria-label="Select all shown" title="Select all shown">${icon(rows.every(l => S.sel.has(l.id)) ? 'check' : 'square')}</button>${th('name','Account')}${th('corp','Corp')}${th('username','Username')}<span>Password</span>${th('notes','Note')}<span></span></li>${body}</ul>`;
+  list.innerHTML = `<ul class="list"><li class="lhead"><button class="selall" data-act="selall" aria-label="Select all shown" title="Select all shown">${icon(rows.every(l => S.sel.has(l.id)) ? 'check' : 'square')}</button>${th('name','Account')}${th('desc','Description')}${th('corp','Corp')}${th('username','Username')}<span>Password</span>${th('notes','Note')}<span></span></li>${body}</ul>`;
 }
 
 $('#fFile').addEventListener('change', e => { S.file = e.target.value; renderLogins(); });
@@ -1627,7 +1648,7 @@ async function initSync(){
     if(!db || !user){ setSyncStatus('unavailable'); return syncResolve(); }
     SYNC.db = db; SYNC.uid = await user.id();
     if(!SYNC.uid){ setSyncStatus('unavailable'); return syncResolve(); }
-    SYNC.ready = true; setSyncStatus(localSyncOn() ? 'synced' : 'off');
+    SYNC.ready = true; setSyncStatus(localSyncOn() ? 'synced' : 'off'); syncChecked.then(autoSync);
     let first = true;
     sdoc('vault-meta').onSnapshot(async snap => {
       await onRemoteMeta(snap);
@@ -1671,9 +1692,9 @@ async function pull(d, tries = 0){
         toast('Updated with changes from your other device.');
       } catch(e){ store.set(VKEY, str); lock('Your synced vault was replaced on another device. Unlock it with that password.'); }
     } else {
-      const wasSetup = !$('#setupForm').hidden; store.set(VKEY, str);
-      if(wasSetup || !$('#lock').hidden && $('#unlockForm').hidden && $('#recoverForm').hidden) showLock('unlock');
-      if(wasSetup) $('#lockSub').textContent = 'Found your synced vault. Unlock it with your username and master password.';
+      const wasSetup = !$('#setupForm').hidden, wasSignin = !$('#unlockForm').hidden && !$('#newVaultBtn').hidden; store.set(VKEY, str);
+      if(wasSetup) showLock('unlock');
+      if(wasSetup || wasSignin) foundSynced();
     }
   } catch(e){ if(tries < 3) setTimeout(() => pull(d, tries + 1), 1500 * (tries + 1)); else setSyncStatus('error'); }
 }
@@ -1694,6 +1715,14 @@ async function push(){
   } catch(e){ setSyncStatus(e && e.code === 'quota_exceeded' ? 'full' : 'error'); }
   finally { SYNC.pushing = false; if(SYNC.pending){ SYNC.pending = false; schedulePush(); } }
 }
+/* Sync is on by default: the first time a vault opens where sync works and no synced copy
+   exists yet, it starts syncing. Turning sync off in Settings is remembered. */
+async function autoSync(){
+  if(!S.key || !SYNC.ready || S.meta.sync || S.meta.syncOptOut) return;
+  await syncChecked;
+  if(!S.key || S.meta.sync || S.meta.syncOptOut || SYNC.remote) return;
+  S.meta.sync = true; await save(false); setSyncStatus('syncing');
+}
 async function remoteOff(){
   if(!SYNC.ready) return;
   const n = SYNC.remote && SYNC.remote.n || 0;
@@ -1704,7 +1733,7 @@ $('#syncToggle').addEventListener('click', () => {
   if(!SYNC.ready) return;
   if(S.meta.sync){
     confirmDialog('Turn off sync?', 'The synced copy is deleted. Each device keeps the vault it has now, but changes stop moving between them.', 'Turn off sync', async () => {
-      S.meta.sync = false; await save(false); try { await remoteOff(); } catch(e){} setSyncStatus('off'); toast('Sync turned off.');
+      S.meta.sync = false; S.meta.syncOptOut = true; await save(false); try { await remoteOff(); } catch(e){} setSyncStatus('off'); toast('Sync turned off.');
     });
   } else {
     openDialog(`<h3>Turn on sync?</h3>
@@ -1712,7 +1741,7 @@ $('#syncToggle').addEventListener('click', () => {
       <p class="muted" style="margin:0">On your phone, open this page while signed in to the same Claude account and unlock with the same username and password.</p>
       ${SYNC.remote && !SYNC.remote.off ? '<p class="warn" style="margin:0">A synced vault already exists. Turning sync on here replaces it with this device\'s vault.</p>' : ''}
       <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Turn on sync</button></div>`,
-    async () => { S.meta.sync = true; S.meta.rev = Math.max(S.meta.rev || 0, SYNC.remote && SYNC.remote.rev || 0); await save(false); toast('Sync turned on. Uploading your encrypted vault…'); });
+    async () => { S.meta.sync = true; S.meta.syncOptOut = false; S.meta.rev = Math.max(S.meta.rev || 0, SYNC.remote && SYNC.remote.rev || 0); await save(false); toast('Sync turned on. Uploading your encrypted vault…'); });
   }
 });
 
