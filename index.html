@@ -617,7 +617,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
         <div class="sblock">
           <h3>Sync across devices</h3>
           <p id="syncStatus">Checking sync…</p>
-          <button class="btn primary" id="syncToggle" disabled>Turn on sync</button>
+          <div class="btns"><button class="btn primary" id="syncToggle">Turn on sync</button><button class="btn" id="syncNow" hidden>Sync now</button></div>
         </div>
         <div class="sblock">
           <h3>Appearance</h3>
@@ -1672,7 +1672,7 @@ $('#wipeBtn').addEventListener('click', () => {
    per-document size limit. Nothing readable ever leaves the device. */
 const DEV_KEY = 'nightvault.device';
 const DEV = store.get(DEV_KEY) || (() => { const d = uid(); store.set(DEV_KEY, d); return d; })();
-const SYNC = { db:null, uid:null, ready:false, pushing:false, pending:false, remote:null, status:'checking', at:0, pushT:null };
+const SYNC = { reason:'', unsub:null, db:null, uid:null, ready:false, pushing:false, pending:false, remote:null, status:'checking', at:0, pushT:null };
 const CHUNK = 180000;
 let syncResolve; const syncChecked = new Promise(r => syncResolve = r);
 setTimeout(() => syncResolve && syncResolve(), 6000);
@@ -1682,30 +1682,45 @@ const localSyncOn = () => { const v = readVault(); return !!(v && v.sync); };
 function setSyncStatus(st, at){
   SYNC.status = st; if(at) SYNC.at = at;
   const on = localSyncOn();
-  const txt = { checking:'Checking sync…', unavailable:'Sync isn’t available in this view.', error:'Sync hit a problem. It will retry on your next change.', full:'Sync storage is full.', syncing:'Syncing…' }[st]
+  const txt = { checking:'Checking sync…', unavailable:'Sync isn’t available here', error:'Sync hit a problem', full:'Sync storage is full', syncing:'Syncing…' }[st]
     || (on ? `Synced${SYNC.at ? ' ' + timeAgo(SYNC.at) : ''}` : 'Sync is off');
   const line = $('#syncLine'); if(line) line.textContent = txt;
   const ls = $('#lockSync'); if(ls) ls.textContent = on && SYNC.ready ? 'Encrypted sync is on' : '';
-  const s = $('#syncStatus'); if(s) s.textContent = on ? txt + '. Changes upload a moment after you make them, and your other devices update automatically.' : (st === 'unavailable' ? txt + ' Open this page on claude.ai while signed in.' : 'Sync is off. This vault lives only in this browser.');
-  const b = $('#syncToggle'); if(b){ b.textContent = on ? 'Turn off sync' : 'Turn on sync'; b.disabled = !SYNC.ready; b.className = on ? 'btn danger' : 'btn primary'; }
+  const s = $('#syncStatus');
+  if(s) s.textContent = (st === 'unavailable' || st === 'error' || st === 'full') ? `${txt}. ${SYNC.reason || ''}`.trim()
+    : st === 'checking' ? 'Checking sync…'
+    : on ? `${txt}. Changes upload a moment after you make them, and your other devices update automatically.`
+    : 'Sync is off. This vault lives only in this browser.';
+  const b = $('#syncToggle'); if(b){ b.disabled = false; b.textContent = !SYNC.ready ? 'Try again' : on ? 'Turn off sync' : 'Turn on sync'; b.className = on && SYNC.ready ? 'btn danger' : 'btn primary'; }
+  const n = $('#syncNow'); if(n) n.hidden = !(SYNC.ready && on);
 }
 function timeAgo(t){ const s = Math.round((Date.now() - t) / 1000); if(s < 45) return 'just now'; const m = Math.round(s / 60); if(m < 60) return `${m} min ago`; const h = Math.round(m / 60); if(h < 24) return `${h} h ago`; return new Date(t).toLocaleDateString(); }
 setInterval(() => { if(SYNC.status === 'synced') setSyncStatus('synced'); }, 30000);
 
+const withTimeout = (p, ms, label) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej({ code:'timeout', message:label }), ms))]);
 async function initSync(){
+  SYNC.reason = ''; SYNC.ready = false; setSyncStatus('checking');
+  const fail = (reason, st = 'unavailable') => { SYNC.reason = reason; setSyncStatus(st); syncResolve(); };
   try {
-    if(!(window.claude && window.claude.use)){ setSyncStatus('unavailable'); return syncResolve(); }
-    const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
-    if(!db || !user){ setSyncStatus('unavailable'); return syncResolve(); }
-    SYNC.db = db; SYNC.uid = await user.id();
-    if(!SYNC.uid){ setSyncStatus('unavailable'); return syncResolve(); }
+    if(!(window.claude && window.claude.use)) return fail('This copy of the page is running outside Claude, so it can’t reach your account’s storage. Open Nightvault from its claude.ai/artifact link.');
+    const [db, user] = await withTimeout(Promise.all([window.claude.use('db'), window.claude.use('user')]), 15000, 'Claude didn’t answer');
+    if(!db) return fail('Claude didn’t give this page access to its storage. Make sure you’re signed in to claude.ai in this browser, then reload the page.');
+    if(!user) return fail('Claude couldn’t confirm which account is signed in. Sign in to claude.ai in this browser, then reload the page.');
+    const id = await withTimeout(user.id(), 15000, 'Claude didn’t return an account id');
+    if(!id) return fail('Claude didn’t return an account id for this browser. Sign in to claude.ai, then reload.');
+    SYNC.db = db; SYNC.uid = id;
+    await withTimeout(sdoc('vault-meta').get(), 20000, 'Storage didn’t respond');
     SYNC.ready = true; setSyncStatus(localSyncOn() ? 'synced' : 'off'); syncChecked.then(autoSync);
+    if(SYNC.unsub) try { SYNC.unsub(); } catch(e){}
     let first = true;
-    sdoc('vault-meta').onSnapshot(async snap => {
+    SYNC.unsub = sdoc('vault-meta').onSnapshot(async snap => {
       await onRemoteMeta(snap);
       if(first){ first = false; syncResolve(); }
-    }, () => { setSyncStatus('error'); syncResolve(); });
-  } catch(e){ setSyncStatus('unavailable'); syncResolve(); }
+    }, err => { SYNC.reason = `Live updates stopped (${err && err.code || 'error'}). Reload the page to reconnect.`; setSyncStatus('error'); syncResolve(); });
+  } catch(e){
+    const code = e && (e.code || e.message) || 'unknown';
+    fail(code === 'timeout' ? `${e.message}. Reload the page and try again.` : code === 'not_granted' || code === 'permission_denied' ? 'This page wasn’t allowed to use your storage. Reload and allow it if Claude asks.' : `Sync couldn’t start (${code}). Reload the page and try again.`, code === 'timeout' ? 'unavailable' : 'error');
+  }
 }
 
 function remoteIsNewer(d, v){
@@ -1763,7 +1778,7 @@ async function push(){
     await sdoc('vault-meta').set(meta); SYNC.remote = meta;
     for(let i = parts.length; i < prevN; i++) await sdoc(`vault-${i}`).delete();
     setSyncStatus('synced', meta.at);
-  } catch(e){ setSyncStatus(e && e.code === 'quota_exceeded' ? 'full' : 'error'); }
+  } catch(e){ const c = e && (e.code || e.message) || 'unknown'; SYNC.reason = c === 'quota_exceeded' ? 'Remove some logins or notes, then try again.' : `Upload failed (${c}). Tap Sync now to retry.`; setSyncStatus(c === 'quota_exceeded' ? 'full' : 'error'); }
   finally { SYNC.pushing = false; if(SYNC.pending){ SYNC.pending = false; schedulePush(); } }
 }
 /* Sync is on by default: the first time a vault opens where sync works and no synced copy
@@ -1780,8 +1795,13 @@ async function remoteOff(){
   await sdoc('vault-meta').set({ off:true, at:Date.now(), dev:DEV, rev:0, n:0 }); SYNC.remote = { off:true };
   for(let i = 0; i < n; i++) await sdoc(`vault-${i}`).delete();
 }
+$('#syncNow').addEventListener('click', async () => {
+  if(!SYNC.ready) return; const v = readVault(); if(!v) return;
+  SYNC.remote = SYNC.remote || null; await push();
+  if(SYNC.status === 'synced') toast('Synced. Your other devices will update in a moment.'); else toast(SYNC.reason || 'Sync hit a problem.', true);
+});
 $('#syncToggle').addEventListener('click', () => {
-  if(!SYNC.ready) return;
+  if(!SYNC.ready){ toast('Reconnecting to sync…'); initSync().then(() => { if(SYNC.ready) toast('Sync connected.'); else toast(SYNC.reason || 'Sync still isn’t available here.', true); }); return; }
   if(S.meta.sync){
     confirmDialog('Turn off sync?', 'The synced copy is deleted. Each device keeps the vault it has now, but changes stop moving between them.', 'Turn off sync', async () => {
       S.meta.sync = false; S.meta.syncOptOut = true; await save(false); try { await remoteOff(); } catch(e){} setSyncStatus('off'); toast('Sync turned off.');
