@@ -227,6 +227,22 @@ button.badge svg{width:18px;height:18px}
 .desccell{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .who .desc{display:block;font-size:13px;color:var(--text);opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .notecell .more{font-size:11px;color:var(--accent-2);font-weight:600}
+.help{display:grid;gap:10px;max-width:780px}
+.help-sec{border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.help-sec>summary{cursor:pointer;list-style:none;padding:14px 18px;font-weight:700;display:flex;justify-content:space-between;gap:12px}
+.help-sec>summary::-webkit-details-marker{display:none}
+.help-sec>summary::after{content:"+";color:var(--muted);font-weight:500;font-size:18px;line-height:1}
+.help-sec[open]>summary::after{content:"−"}
+.help-body{padding:0 18px 16px;font-size:14px;line-height:1.6}
+.help-body ol,.help-body ul{margin:0 0 10px;padding-left:22px;display:grid;gap:4px}
+.help-body p{margin:0 0 10px;max-width:68ch}
+.faq-title{font:600 18px var(--display);margin:14px 0 2px}
+.help-dlg{display:grid;gap:10px;max-height:60vh;overflow:auto;padding-right:4px}
+.fmt-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+.fmt{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+.fmt th,.fmt td{text-align:left;padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+.fmt th{border-top:0;background:var(--surface-2);font-size:12px;color:var(--muted)}
+.fmt td.muted{font-size:12px}
 .colmap{display:grid;gap:6px;font-size:13px;padding:12px;border-radius:12px;background:var(--surface-2)}
 .colmap span{line-height:1.6}
 .otp{display:inline-block;margin-top:3px;border:1px solid var(--line);background:var(--surface-2);color:var(--accent-2);border-radius:6px;padding:1px 7px;font-size:12px;cursor:pointer}
@@ -372,7 +388,8 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
   .rail-foot [data-themebtn]{display:none}
   #toasts{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
   .bulk{bottom:8px}
-  .nav{padding:7px 4px}
+  .nav{padding:7px 2px;font-size:10.5px;min-width:0}
+  .nav svg{width:20px;height:20px}
   .lrow{grid-template-columns:38px minmax(0,1fr) auto;row-gap:6px}
   .lrow .fld,.lrow .corpcell,.lrow .notecell,.lrow .desccell{grid-column:2/4}
   .lrow .desccell:empty{display:none}
@@ -383,12 +400,15 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
   .cal-wrap{grid-template-columns:1fr}
 }
 @media (max-width:760px){
-  #app{grid-template-columns:1fr;grid-template-rows:1fr auto}
+  #app{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto}
+  .rail{min-width:0;overflow:hidden}
   .rail{grid-row:2;flex-direction:row;border-right:0;border-top:1px solid var(--line);padding:6px 6px;justify-content:space-around}
   .rail .logo,.rail .nav .count,.rail-foot .timer{display:none}
   .nav{flex-direction:column;gap:3px;font-size:11px;padding:7px 8px;width:auto;flex:1;align-items:center}
   .nav[aria-current="page"]{box-shadow:inset 0 2px 0 var(--accent)}
-  .rail-foot{margin:0;border:0;padding:0;display:flex}
+  .rail-foot{display:contents}
+  .rail{gap:0}
+  .rail .nav,.rail-foot .btn{flex:1 1 0;min-width:0;overflow:hidden;text-overflow:ellipsis}
   .rail-foot .btn{flex-direction:column;gap:3px;font-size:11px;border:0;padding:7px 8px;background:transparent;color:var(--muted)}
   .view{padding-top:22px}
   .vhead h2{font-size:24px}
@@ -424,6 +444,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
     <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></symbol>
     <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
     <symbol id="i-face" viewBox="0 0 24 24"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M9 9.5v1M15 9.5v1M12 9.5v3.5h-1M9.5 15.5a3.5 3.5 0 0 0 5 0"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.6 2.6 0 0 1 5 .9c0 1.7-2.5 2.2-2.5 3.6M12 17.2v.1"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
     <symbol id="i-square" viewBox="0 0 24 24"><rect x="4.5" y="4.5" width="15" height="15" rx="3"/></symbol>
     <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></symbol>
@@ -476,6 +497,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
       <button type="button" class="linkbtn" id="forgotBtn">Forgot password?</button>
       <button type="button" class="linkbtn" id="newVaultBtn" hidden>New to Nightvault? Create a vault</button>
       <button type="button" class="linkbtn" id="lockRestoreBtn">Restore from a backup file</button>
+      <button type="button" class="linkbtn" id="lockHelpBtn">How does Nightvault work?</button>
       <input type="file" id="lockRestoreInput" accept=".json,application/json" hidden>
     </form>
 
@@ -517,6 +539,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
     <button class="nav" data-tab="cards"><svg class="i"><use href="#i-card"/></svg>Cards<span class="count" id="cCards"></span></button>
     <button class="nav" data-tab="secure"><svg class="i"><use href="#i-note"/></svg>Notes<span class="count" id="cSecure"></span></button>
     <button class="nav" data-tab="calendar"><svg class="i"><use href="#i-cal"/></svg>Calendar</button>
+    <button class="nav" data-tab="help"><svg class="i"><use href="#i-help"/></svg>Help</button>
     <button class="nav" data-tab="settings"><svg class="i"><use href="#i-gear"/></svg>Settings</button>
     <div class="rail-foot">
       <div class="timer">Auto-lock in <b id="timer">--:--</b></div>
@@ -537,6 +560,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
         <div style="flex:1 1 auto"><h2>Logins</h2><p>Import a CSV or a whole Excel workbook. Tabs become corps, or logins are sorted by email domain. Filter by corp, file or note, and sort by any column.</p></div>
         <button class="btn" id="exportLogins"><svg class="i"><use href="#i-down"/></svg>Export</button>
         <button class="btn" id="addLogin"><svg class="i"><use href="#i-plus"/></svg>Add login</button>
+        <button class="btn" id="formatBtn"><svg class="i"><use href="#i-note"/></svg>Import format</button>
         <button class="btn primary" id="importBtn"><svg class="i"><use href="#i-up"/></svg>Import file</button>
         <input type="file" id="csvInput" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
       </div>
@@ -615,6 +639,13 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
           <div class="panel"><h3>Coming up</h3><ul class="up" id="upList"></ul></div>
         </div>
       </div>
+    </section>
+
+    <!-- Help -->
+    <section class="view" id="v-help" hidden>
+      <div class="vhead"><div style="flex:1 1 auto"><h2>Help</h2><p>Setting up, signing in on other devices, Face ID, installing the app, and common questions.</p></div></div>
+      <div class="toolbar"><div class="search"><svg class="i"><use href="#i-search"/></svg><input class="inp" id="helpQ" type="search" placeholder="Search help" autocomplete="off"></div></div>
+      <div id="helpBody" class="help"></div>
     </section>
 
     <!-- Settings -->
@@ -1128,7 +1159,7 @@ function render(){
   if(!S.vault) return;
   $('#cLogins').textContent = S.vault.logins.length || ''; $('#cCards').textContent = S.vault.cards.length || '';
   $('#cSecure').textContent = S.vault.secure.length || '';
-  ({ logins:renderLogins, cards:renderCards, secure:renderSecure, calendar:renderCal, settings:renderSettings })[S.tab]();
+  ({ logins:renderLogins, cards:renderCards, secure:renderSecure, calendar:renderCal, settings:renderSettings, help:renderHelp })[S.tab]();
 }
 
 /* ---------- dialog ---------- */
@@ -1201,7 +1232,7 @@ const COLS = {
   name:['name','title','site','site name','account','service','app','application'],
   url:['url','login_uri','website','web site','uri','link','domain','login url','address','origin'],
   username:['username','login_username','user','user name','email','e-mail','email address','emails','login','userid','user id','login name'],
-  password:['password','login_password','pass','passwd','pwd'],
+  password:['password','login_password','pass','passwd','pwd','pw'],
   notes:['notes','note','extra','comments','comment','status','remarks','remark','memo'],
   desc:['description','desc','purpose','used for','use','usage','for','what for',"what it's for",'what its for','details','about','info','account for','account type','role'],
   newpw:['new password','new pass','new pw','updated password','current password','latest password'],
@@ -1309,7 +1340,8 @@ $('#csvInput').addEventListener('change', async e => {
   }
   if(!recs.length && !updates.length){
     if(dup) return toast(`All ${dup} rows were already in the vault.`, true);
-    return toast(isBook ? 'No tab has a header row with an email, username or password column.' : 'No usable columns found. The first row needs headers such as "email" and "password".', true);
+    toast(isBook ? 'No tab has a header row with an email, username or password column.' : 'No usable columns found. The first row needs headers such as "email" and "password".', true);
+    return formatGuide();
   }
   importDialog(file.name, recs, dup, skipped, isBook, [...colInfo.keys()], updates);
 });
@@ -1410,7 +1442,7 @@ function renderLogins(){
   $('#resultCount').textContent = L.length ? `${rows.length} of ${L.length} shown` : '';
 
   const list = $('#loginList');
-  if(!L.length){ list.innerHTML = `<div class="empty"><h3>No logins yet</h3><p>Import a CSV or an Excel workbook (.xlsx). In a workbook, each tab can become its own corp. Each sheet needs a header row with a password column, plus email or username.</p><button class="btn primary" data-act="import">${icon('up')}Import file</button></div>`; return; }
+  if(!L.length){ list.innerHTML = `<div class="empty"><h3>No logins yet</h3><p>Import a CSV or an Excel workbook (.xlsx). In a workbook, each tab becomes its own corp. Not sure how to lay it out? Start from the template.</p><div class="btns" style="justify-content:center;margin-top:14px"><button class="btn" data-act="format">${icon('note')}Import format &amp; template</button><button class="btn primary" data-act="import">${icon('up')}Import file</button></div></div>`; return; }
   if(!rows.length){ list.innerHTML = S.view === 'risk' && !riskN
     ? `<div class="empty"><h3>No passwords at risk</h3><p>None of your passwords are weak or more than a year old.</p></div>`
     : `<div class="empty"><h3>Nothing matches</h3><p>Clear the search or switch filters back to “All”.</p></div>`; return; }
@@ -1471,6 +1503,7 @@ $('#v-logins').addEventListener('click', e => {
   }
   const act = t.dataset.act;
   if(act === 'import') return $('#csvInput').click();
+  if(act === 'format') return formatGuide();
   if(act === 'selall'){ const all = (S.rows || []).every(l => S.sel.has(l.id)); (S.rows || []).forEach(l => all ? S.sel.delete(l.id) : S.sel.add(l.id)); return renderLogins(); }
   const id = t.closest('[data-id]')?.dataset.id, l = V.logins.find(x => x.id === id); if(!l) return;
   if(act === 'sel'){ S.sel.has(id) ? S.sel.delete(id) : S.sel.add(id); return renderLogins(); }
@@ -1778,6 +1811,7 @@ async function onRemoteMeta(snap){
   if(!snap.exists){ SYNC.remote = null; if(v && v.sync && SYNC.ready) schedulePush(); setSyncStatus(v && v.sync ? 'synced' : 'off'); return; }
   const d = snap.data();
   if(d && d.moved){   // the password was changed on another device, so this copy is out of date
+    if(v && (v.at || 0) > (d.at || 0)){ SYNC.remote = null; if(v.sync) schedulePush(); return; }   // this vault is newer than the marker (e.g. a fresh vault), so it takes the slot
     if(SYNC.kind === 'netlify'){ NET.token = null; clearInterval(NET.poll); if(v && v.sync) store.del(VKEY);
       if(S.key) lock('Your master password was changed on another device. Sign in with the new one.'); else showLock(); }
     return;
@@ -2300,6 +2334,133 @@ function netResume(){
   addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {}));
 })();
 addEventListener('online', () => { if(NET.token){ netCheck().catch(() => {}); if(S.meta && S.meta.sync) schedulePush(); } });
+
+/* ============ IMPORT FORMAT GUIDE + TEMPLATES ============ */
+const TPL_HEAD = ['Description', 'Email', 'Password', 'Note', 'Website'];
+const TPL_ROWS = {
+  'Example Corp': [
+    ['Gmail', 'hello@examplecorp.com', 'Replace-This-Password-1', 'Active', 'mail.google.com'],
+    ['Instagram', 'social@examplecorp.com', 'Replace-This-Password-2', 'Main brand account', 'instagram.com'],
+    ['Docusign', 'admin@examplecorp.com', 'Replace-This-Password-3', 'Used by finance team', 'docusign.com'],
+  ],
+  'Second Corp': [
+    ['Gmail', 'info@secondcorp.ca', 'Replace-This-Password-4', 'Active', 'mail.google.com'],
+    ['ChatGPT', 'ops@secondcorp.ca', 'Replace-This-Password-5', '', 'chatgpt.com'],
+  ],
+};
+function downloadTemplate(kind){
+  if(kind === 'csv'){
+    const rows = [['Corp', ...TPL_HEAD], ...Object.entries(TPL_ROWS).flatMap(([c, rs]) => rs.map(r => [c, ...r]))];
+    return offerFile('nightvault-import-template.csv', '\uFEFF' + rows.map(r => r.map(csvCell).join(',')).join('\r\n'), 'Template downloaded. Replace the example rows with your own, then import it.');
+  }
+  const sheets = Object.entries(TPL_ROWS).map(([name, rs]) => ({ name, rows:[TPL_HEAD, ...rs] }));
+  offerFile('nightvault-import-template.xlsx', buildXlsx(sheets), 'Template downloaded. Rename the tabs to your corps, replace the example rows, then import it.');
+}
+function formatGuide(){
+  const row = (c, what, alt) => `<tr><td><b>${c}</b></td><td>${what}</td><td class="muted">${alt}</td></tr>`;
+  openDialog(`<h3>Import format</h3>
+    <p class="muted" style="margin:0">Use an Excel workbook (.xlsx) or a CSV file. Put column names in the first row and one login per row. In Excel, <b>each tab becomes a corp</b>, named after the tab. In a CSV, add a <b>Corp</b> column instead.</p>
+    <div class="fmt-wrap"><table class="fmt">
+      <thead><tr><th>Column</th><th>What goes in it</th><th>Also recognized as</th></tr></thead>
+      <tbody>
+        ${row('Email', 'The login email or username. Required, unless the row has a password.', 'Username, Login, User, Email address')}
+        ${row('Password', 'The password. Can be left blank.', 'Pass, PW. A “New password” column replaces the old one and keeps it in history.')}
+        ${row('Description', 'What the login is for, such as Gmail, Docusign or ChatGPT.', 'Purpose, Used for, Details, Info')}
+        ${row('Note', 'Status or remarks, such as Active or Deleted.', 'Notes, Comments, Status, Remarks')}
+        ${row('Website', 'Optional. The site’s address.', 'URL, Link, Domain')}
+        ${row('Corp', 'Optional. Only needed in a CSV, or to override the tab name.', 'Company, Client, Brand')}
+        ${row('2FA key', 'Optional. The authenticator setup key.', '2FA, TOTP, Authenticator, MFA')}
+      </tbody></table></div>
+    <p class="muted" style="margin:0">Any other columns, such as Recovery phone or Owner, are kept in each login’s notes. Logins already in your vault are matched and updated, not duplicated. Older .xls and Numbers files need to be saved as .xlsx first.</p>
+    <div class="btns"><button type="button" class="btn primary" data-tpl="xlsx">${icon('down')}Excel template</button><button type="button" class="btn" data-tpl="csv">${icon('down')}CSV template</button></div>
+    <div class="foot"><button type="button" class="btn left" id="fmtImport">${icon('up')}Import a file</button><button class="btn primary" value="cancel" formnovalidate>Done</button></div>`, null);
+  dlg.classList.add('wide');
+  dform.onclick = e => {
+    const t = e.target.closest('[data-tpl]'); if(t) downloadTemplate(t.dataset.tpl);
+    if(e.target.closest('#fmtImport')){ dlg.close(); $('#csvInput').click(); }
+  };
+}
+$('#formatBtn').addEventListener('click', formatGuide);
+
+/* ============ HELP ============ */
+let installEvt = null;
+addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if(S.tab === 'help') renderHelp(); });
+addEventListener('appinstalled', () => { installEvt = null; toast('Nightvault is installed. Open it from your home screen or apps.'); });
+const platform = () => { const ua = navigator.userAgent; if(/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return 'ios'; if(/Android/i.test(ua)) return 'android'; return 'desktop'; };
+const installed = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+
+function helpHTML(inApp){
+  const p = platform(), act = (a, label, cls = 'btn') => inApp ? `<button type="button" class="${cls}" data-help="${a}">${label}</button>` : '';
+  const steps = {
+    ios:`<p><b>iPhone or iPad</b></p><ol><li>Open this site in <b>Safari</b>.</li><li>Tap the <b>Share</b> button (the square with an arrow pointing up).</li><li>Scroll down and tap <b>Add to Home Screen</b>, then <b>Add</b>.</li></ol>`,
+    android:`<p><b>Android</b></p><ol><li>Open this site in <b>Chrome</b>.</li><li>Tap the <b>⋮</b> menu at the top right.</li><li>Tap <b>Install app</b> or <b>Add to Home screen</b>, then <b>Install</b>.</li></ol>`,
+    desktop:`<p><b>Computer</b></p><ol><li><b>Chrome:</b> click the install icon at the right end of the address bar, or ⋮ → <b>Cast, save, and share</b> → <b>Install page as app</b>.</li><li><b>Edge:</b> click ⋯ → <b>Apps</b> → <b>Install this site as an app</b>.</li><li><b>Safari on Mac:</b> File → <b>Add to Dock</b>.</li></ol>`
+  };
+  const order = [p, ...['ios','android','desktop'].filter(x => x !== p)];
+  const sec = (id, title, body, open) => `<details class="help-sec" data-hid="${id}"${open ? ' open' : ''}><summary>${title}</summary><div class="help-body">${body}</div></details>`;
+  const faq = [
+    ['I forgot my master password', 'On the lock screen, tap <b>Forgot password?</b> and paste the recovery key you saved or emailed to yourself when you created the vault. You can then choose a new password.'],
+    ['I lost my recovery key', 'If you can still unlock, go to Settings → <b>Password recovery</b> → <b>Create new recovery key</b> and save the new one. If you’ve lost both your password and your recovery key, the vault can’t be opened by anyone. That’s the price of nobody else being able to read it.'],
+    ['Can the person who runs this site see my passwords?', 'No. Your vault is encrypted on your own device before it’s saved or synced, using a key made from your password. The server only ever stores scrambled data and never receives your password.'],
+    ['It says “No synced vault matches this username and password”', 'Check both carefully (the username isn’t case-sensitive, the password is). If this is your first time on a new device, unlock Nightvault once on the device that already has your vault, so it can upload, then try again.'],
+    ['Changes aren’t showing on my other device', 'Open Settings on both devices and check that sync says <b>Synced</b>. Tap <b>Sync now</b> on the device where you made the change, then reopen the app on the other one.'],
+    ['It says “Too many attempts”', 'After a few wrong passwords, Nightvault makes you wait before trying again, and the wait grows with each miss. This slows down anyone guessing. Wait for the timer, then try again.'],
+    ['How do I change my password?', 'Settings → <b>Update password</b>. Your other devices will ask you to sign in again with the new password. Your recovery key keeps working.'],
+    ['What does “At risk” mean?', 'Logins whose password is short or easy to guess, or hasn’t been changed in over a year.'],
+    ['How do I move logins between corps?', 'Drag a login onto a corp chip, or select several and use <b>Move to corp</b>. To arrange corps and subcorps, tap <b>Organize</b> at the end of the corp chips. On a phone, press and hold before dragging.'],
+    ['Does it work offline?', 'Yes, if you’ve installed the app or opened the site on that device before. You’ll see your last synced vault, and changes sync when you’re back online.'],
+    ['How do I share logins with someone?', 'Use <b>Export</b> on the Logins page and choose what to include. The exported file isn’t encrypted, so send it securely and ask them to delete it after importing.'],
+    ['How do I delete everything?', 'Settings → <b>Delete vault</b>. This erases the vault on this device and its synced copy. Other devices keep their copy until you delete it there too.']
+  ];
+  return `
+    ${sec('start', 'Getting started', `<ol>
+      <li><b>Create your vault.</b> Tap <b>New to Nightvault? Create a vault</b>, pick a username and a long master password (a few random words works well), and enter your email.</li>
+      <li><b>Save your recovery key.</b> Email it to yourself or download it. It’s the only way back in if you forget your password.</li>
+      <li><b>Add your logins.</b> Import an Excel or CSV file, or tap <b>Add login</b>.</li></ol>
+      <div class="btns">${act('format', `${icon('note')}Import format &amp; templates`)}</div>`, true)}
+    ${sec('signin', 'Signing in on another device', `<ol>
+      <li>Open this same site on the other device.</li>
+      <li>Tap <b>Sign in</b> with the same username and master password.</li>
+      <li>Your vault downloads. Sync is on by default, so changes move between devices on their own.</li></ol>
+      <p class="muted">The first time, unlock on your original device once so it can upload your vault.</p>`)}
+    ${sec('bio', 'Face ID and fingerprint unlock', `<ol>
+      <li>Unlock with your password.</li>
+      <li>Go to Settings → <b>Face ID / fingerprint unlock</b> → <b>Turn on</b>, and confirm with your face, fingerprint or device PIN.</li>
+      <li>Next time, tap <b>Unlock with Face ID or fingerprint</b> on the lock screen.</li></ol>
+      <p class="muted">Set it up separately on each device. Your password always works too. It’s available when Nightvault is opened from its own website or installed app.</p>
+      <div class="btns">${act('settings', `${icon('gear')}Open Settings`)}</div>`)}
+    ${sec('install', 'Install the app icon', `${installed() ? '<p><b>You’re already using the installed app.</b></p>' : installEvt && inApp ? `<div class="btns">${act('install', `${icon('down')}Install Nightvault`, 'btn primary')}</div>` : ''}
+      ${order.map(k => steps[k]).join('')}
+      <p class="muted">After installing, open the app and sign in once. On iPhone, the home-screen app keeps its own storage, so turn on Face ID inside the app itself.</p>`)}
+    ${sec('sync', 'Sync and backups', `<p>Sync keeps every device signed in to your vault up to date. Check its status in Settings, where <b>Sync now</b> forces an upload.</p>
+      <p>A backup is a single encrypted file of your whole vault. Download one now and then from Settings → <b>Backup</b>. To bring a vault onto a new device without sync, use <b>Restore from a backup file</b> on the sign-in screen.</p>`)}
+    ${sec('security', 'Security and privacy', `<ul>
+      <li>Everything is encrypted on your device (AES-256) before it’s stored or synced. Nobody else, including whoever runs this site, can read it.</li>
+      <li>Use a master password you don’t use anywhere else, and turn on two-step verification for the email that holds your recovery key.</li>
+      <li>Turn on “Lock as soon as I switch to another app or tab” in Settings on your phone.</li>
+      <li>Delete imported or exported CSV and Excel files once you’re done with them. They aren’t encrypted.</li></ul>`)}
+    <h3 class="faq-title">Questions</h3>
+    ${faq.map(([q, a], i) => sec('faq' + i, q, `<p>${a}</p>`)).join('')}`;
+}
+function renderHelp(){
+  const q = ($('#helpQ').value || '').trim().toLowerCase();
+  $('#helpBody').innerHTML = helpHTML(true);
+  if(q){ let n = 0; $$('#helpBody .help-sec').forEach(d => { const hit = d.textContent.toLowerCase().includes(q); d.hidden = !hit; d.open = hit; if(hit) n++; });
+    $('#helpBody .faq-title').hidden = !$$('#helpBody .help-sec[data-hid^="faq"]:not([hidden])').length;
+    if(!n) $('#helpBody').insertAdjacentHTML('afterbegin', '<p class="muted">Nothing matches that. Try another word, like “password” or “install”.</p>'); }
+}
+$('#helpQ').addEventListener('input', renderHelp);
+$('#helpBody').addEventListener('click', async e => {
+  const b = e.target.closest('[data-help]'); if(!b) return;
+  const a = b.dataset.help;
+  if(a === 'format') return formatGuide();
+  if(a === 'settings') return setTab('settings');
+  if(a === 'install' && installEvt){ installEvt.prompt(); try { await installEvt.userChoice; } catch(err){} installEvt = null; renderHelp(); }
+});
+$('#lockHelpBtn').addEventListener('click', () => {
+  openDialog(`<h3>How Nightvault works</h3><div class="help-dlg">${helpHTML(false)}</div><div class="foot"><button class="btn primary" value="cancel" formnovalidate>Done</button></div>`, null);
+  dlg.classList.add('wide');
+});
 
 /* ---------- start ---------- */
 if(!window.crypto || !crypto.subtle){
