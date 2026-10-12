@@ -493,6 +493,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
           <div class="tools"><button type="button" class="ib" data-peek aria-label="Show password"><svg class="i"><use href="#i-eye"/></svg></button></div></div>
       </label>
       <label class="f">Confirm master password<input class="inp" type="password" name="pass2" required minlength="12" autocomplete="new-password"></label>
+      <label class="f">Your email for the recovery key<input class="inp" type="email" name="rcemail" required autocomplete="email" spellcheck="false" autocapitalize="off" placeholder="you@example.com"></label>
       <p class="caps" hidden>Caps Lock is on</p>
       <button class="btn primary" type="submit" id="setupBtn">Create vault</button>
       <p class="lock-msg" id="setupMsg" role="alert"></p>
@@ -694,7 +695,7 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const te = new TextEncoder(), td = new TextDecoder();
 const VKEY = 'nightvault.v1', FKEY = 'nightvault.fails', ITER = 600000, RC_ITER = 200000;
-const DEFAULT_RC = ['enald.araneta0626@gmail.com', 'shounjiro26@gmail.com'];
+const DEFAULT_RC = [];   // each person sets their own recovery email when creating a vault
 
 /* ---------- storage ---------- */
 const mem = {};
@@ -742,7 +743,7 @@ function b32dec(str){
 const fmtRk = s => s.match(/.{1,4}/g).join('-');
 
 /* ---------- state ---------- */
-const emptyVault = () => ({ logins:[], files:[], cards:[], notes:{}, secure:[], settings:{ autolock:5, lockOnHide:false } });
+const emptyVault = () => ({ logins:[], files:[], cards:[], notes:{}, secure:[], corpMeta:{}, settings:{ autolock:5, lockOnHide:false, corpSeeded:true } });
 const S = { key:null, dek:null, meta:null, user:'', vault:null, deadline:0, tab:'logins',
   view:'all', rows:[], corp:'all', file:'all', note:'all', sort:'name', dir:1, group:true, q:'', shown:new Set(), sel:new Set(), cal:null, clipT:null };
 
@@ -960,9 +961,9 @@ function showLock(mode){
   $('#unlockBtn').textContent = signin ? 'Sign in' : 'Unlock vault';
   $('#unlockForm').hidden = mode !== 'unlock'; $('#setupForm').hidden = mode !== 'setup'; $('#recoverForm').hidden = mode !== 'recover';
   $$('#lock form').forEach(f => f.reset()); $$('.lock-msg').forEach(m => m.textContent = '');
-  const to = v && v.rcTo ? v.rcTo : DEFAULT_RC;
+  const to = v && Array.isArray(v.rcTo) ? v.rcTo : [];
   $('#lockSub').textContent = mode === 'setup' ? 'Only the username and password you choose here will open it.'
-    : mode === 'recover' ? `Paste the recovery key that was emailed to ${to.map(maskEmail).join(' and ')}, then choose a new password.`
+    : mode === 'recover' ? (to.length ? `Paste the recovery key that was emailed to ${to.map(maskEmail).join(' and ')}, then choose a new password.` : 'Paste your recovery key, then choose a new password.')
     : signin ? 'Use the same username and master password as on your other device.'
     : 'Enter your username and master password to unlock.';
   $('#fineprint').textContent = mode === 'setup' ? "Right after this you'll get a recovery key to email to yourself. It's the only way back in if you forget your password." : 'AES-256 encryption, done in your browser.';
@@ -995,13 +996,14 @@ $('#setupForm').addEventListener('submit', async e => {
   e.preventDefault();
   const f = e.target, user = f.user.value.trim(), msg = $('#setupMsg');
   const bad = checkNewPw(user, f.pass.value, f.pass2.value); if(bad) return msg.textContent = bad;
+  const rcEmail = f.rcemail.value.trim(); if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(rcEmail)) return msg.textContent = 'Enter a valid email address for your recovery key.';
   const btn = $('#setupBtn'); btn.disabled = true; btn.textContent = 'Checking for a synced vault…'; busyDial(true);
   await syncChecked;
   if(readVault()){ btn.disabled = false; btn.textContent = 'Create vault'; busyDial(false); return showLock('unlock'), $('#lockSub').textContent = 'Found your synced vault. Unlock it with your username and master password.'; }
   btn.textContent = 'Generating key…';
   try {
     const dek = rand(32);
-    S.meta = { v:2, pw: await wrapWithPw(user, f.pass.value, dek), rc:null, rcTo:DEFAULT_RC.slice(), rcAt:0, rev:0, at:0, sync:false };
+    S.meta = { v:2, pw: await wrapWithPw(user, f.pass.value, dek), rc:null, rcTo:[rcEmail], rcAt:0, rev:0, at:0, sync:false };
     await setDek(dek); S.user = user; S.vault = emptyVault(); netStart(user, f.pass.value);
     await save(); openApp();
   } catch(err){ msg.textContent = 'This browser could not create the vault (Web Crypto unavailable).'; }
@@ -1146,19 +1148,19 @@ async function newRecovery(first){
   const w = await wrap(await rcKek(rkBytes, salt, RC_ITER), S.dek);
   S.meta.rc = { salt:toB64(salt), iter:RC_ITER, ...w }; S.meta.rcAt = Date.now();
   await save();
-  const rk = fmtRk(b32enc(rkBytes)), to = S.meta.rcTo.length ? S.meta.rcTo : DEFAULT_RC;
+  const rk = fmtRk(b32enc(rkBytes)), to = S.meta.rcTo || [];
   rkBytes.fill(0);
   const subject = 'Nightvault recovery key';
   const body = `Your Nightvault recovery key:\n\n${rk}\n\nCreated ${new Date().toLocaleString()}.\n\nIf you forget your master password, open Nightvault, choose "Forgot password?" on the lock screen and paste this key to set a new password.\n\nAnyone holding this key and your device's vault can open it. Keep this email private, and don't forward it.`;
   const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to.join(','))}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   const mailto = `mailto:${to.map(encodeURIComponent).join(',')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   openDialog(`<h3>${first ? 'Save your recovery key' : 'New recovery key'}</h3>
-    <p class="muted" style="margin:0">${first ? 'If you ever forget your password, this key lets you set a new one.' : 'Your previous recovery key no longer works.'} It's shown only once. Send it to:</p>
-    <ul class="rto">${to.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+    <p class="muted" style="margin:0">${first ? 'If you ever forget your password, this key lets you set a new one.' : 'Your previous recovery key no longer works.'} It's shown only once. ${to.length ? 'Send it to:' : 'Copy or download it and keep it somewhere safe. You can add a recovery email in Settings.'}</p>
+    ${to.length ? `<ul class="rto">${to.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
     <div class="rkey" id="rkText">${esc(rk)}</div>
     <div class="btns">
-      <a class="btn primary" href="${esc(gmail)}" target="_blank" rel="noopener noreferrer">Compose in Gmail</a>
-      <a class="btn" href="${esc(mailto)}" target="_blank" rel="noopener noreferrer">Other email app</a>
+      ${to.length ? `<a class="btn primary" href="${esc(gmail)}" target="_blank" rel="noopener noreferrer">Compose in Gmail</a>
+      <a class="btn" href="${esc(mailto)}" target="_blank" rel="noopener noreferrer">Other email app</a>` : ''}
       <button type="button" class="btn" data-copy="${esc(rk)}" data-label="Recovery key">${icon('copy')}Copy</button>
       <button type="button" class="btn" id="rkDl">Download .txt</button>
     </div>
@@ -2015,6 +2017,8 @@ function seedCorps(V){
   V.corpMeta = V.corpMeta && typeof V.corpMeta === 'object' ? V.corpMeta : {};
   if(V.settings.corpSeeded) return;
   const names = new Set(V.logins.map(l => l.corp));
+  V.settings.corpSeeded = true;
+  if(!['Robuso', 'Robuso Ventures', 'BWM', 'Verified Digital'].some(n => names.has(n))) return;
   if(names.has('Robuso') && !names.has('Robuso Ventures')) renameCorpIn(V, 'Robuso', 'Robuso Ventures');
   ['Robuso Ventures', 'BWM', 'Verified Digital'].forEach((n, i) => { V.corpMeta[n] = { ...(V.corpMeta[n] || {}), main:true, parent:null, order:i }; });
   V.settings.corpSeeded = true; corpMigrated = true;
