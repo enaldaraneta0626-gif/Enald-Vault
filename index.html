@@ -146,6 +146,10 @@ button.badge[aria-pressed="true"]{background:var(--accent-2);color:#fff}
 button.badge svg{width:18px;height:18px}
 .selall{all:unset;cursor:pointer;width:38px;display:grid;place-items:center;color:var(--muted)}
 .selall:focus-visible{outline:2px solid var(--accent)}
+.who .desc{display:block;font-size:13px;color:var(--text);opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.notecell .more{font-size:11px;color:var(--accent-2);font-weight:600}
+.colmap{display:grid;gap:6px;font-size:13px;padding:12px;border-radius:12px;background:var(--surface-2)}
+.colmap span{line-height:1.6}
 .otp{display:inline-block;margin-top:3px;border:1px solid var(--line);background:var(--surface-2);color:var(--accent-2);border-radius:6px;padding:1px 7px;font-size:12px;cursor:pointer}
 .hw.old{color:var(--muted)}
 .bulk{position:sticky;bottom:12px;margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;border:1px solid var(--accent-2);border-radius:14px;background:var(--surface);box-shadow:0 12px 30px rgba(0,0,0,.25);z-index:3}
@@ -446,7 +450,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
         <button class="ib del" id="fFileDel" aria-label="Remove this file and its logins" title="Remove this file and its logins" hidden><svg class="i"><use href="#i-trash"/></svg></button>
         <label>Note <select class="inp" id="fNote"></select></label>
         <label>Sort <select class="inp" id="fSort">
-          <option value="name">Account</option><option value="corp">Corp</option><option value="username">Username</option><option value="notes">Note</option><option value="added">Date added</option><option value="file">File</option>
+          <option value="name">Account</option><option value="corp">Corp</option><option value="username">Username</option><option value="desc">Description</option><option value="notes">Note</option><option value="added">Date added</option><option value="file">File</option>
         </select></label>
         <button class="btn" id="fDir" style="padding:8px 12px">A–Z</button>
         <label class="tog"><input type="checkbox" id="fGroup" checked>Group by corp</label>
@@ -456,6 +460,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
       <div class="bulk" id="bulk" hidden>
         <b id="bulkN"></b>
         <button class="btn" data-bulk="all">Select all shown</button>
+        <button class="btn" data-bulk="desc">Describe</button>
         <button class="btn" data-bulk="move">Move to corp</button>
         <button class="btn" data-bulk="fav">Favorite</button>
         <button class="btn" data-bulk="unfav">Unfavorite</button>
@@ -756,8 +761,8 @@ function buildXlsx(sheets){
   sheets.forEach((s, i) => files.push({ name:`xl/worksheets/sheet${i+1}.xml`, data:`${H}<worksheet xmlns="${NS}"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols><col min="1" max="${s.rows[0].length}" width="28" customWidth="1"/></cols><sheetData>${s.rows.map((r, ri) => `<row r="${ri+1}">${r.map((v, ci) => `<c r="${colName(ci)}${ri+1}" t="inlineStr"${ri === 0 ? ' s="1"' : ''}><is><t xml:space="preserve">${xe(v)}</t></is></c>`).join('')}</row>`).join('')}</sheetData></worksheet>` }));
   return zipStore(files);
 }
-const EXPORT_HEAD = ['Corp','Name','URL','Username','Password','Note'];
-const exportRow = l => [l.corp, l.name, l.url, l.username, l.password, l.notes];
+const EXPORT_HEAD = ['Corp','Name','Description','URL','Username','Password','Note'];
+const exportRow = l => [l.corp, l.name, l.desc || '', l.url, l.username, l.password, l.notes];
 const csvCell = v => { v = String(v ?? ''); return /[",\r\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };
 function sheetName(n, used){ let s = (String(n || 'Uncategorized').replace(/[\[\]:*?\/\\]/g, ' ').replace(/\s+/g, ' ').trim() || 'Uncategorized').slice(0, 31), b = s, i = 2; while(used.has(s.toLowerCase())){ const sfx = ` (${i++})`; s = b.slice(0, 31 - sfx.length) + sfx; } used.add(s.toLowerCase()); return s; }
 
@@ -1052,7 +1057,9 @@ const COLS = {
   url:['url','login_uri','website','web site','uri','link','domain','login url','address','origin'],
   username:['username','login_username','user','user name','email','e-mail','email address','emails','login','userid','user id','login name'],
   password:['password','login_password','pass','passwd','pwd'],
-  notes:['notes','note','extra','comments','comment','description','status'],
+  notes:['notes','note','extra','comments','comment','status','remarks','remark','memo'],
+  desc:['description','desc','purpose','used for','use','usage','for','what for',"what it's for",'what its for','details','about','info','account for','account type','role'],
+  totp:['totp','otp','2fa','2fa secret','2fa key','authenticator','authenticator key','mfa','mfa secret','mfa key'],
   corp:['corp','corporation','company','organization','organisation','org','client','business','brand']
 };
 function mapHeaders(h){ const n = h.map(x => x.trim().toLowerCase()); const m = {}; for(const k in COLS){ const i = n.findIndex(x => COLS[k].includes(x)); if(i > -1) m[k] = i; } return m; }
@@ -1114,15 +1121,23 @@ $('#csvInput').addEventListener('change', async e => {
     try { sheets = [{ name:'', rows: parseCSV(await file.text()) }]; } catch(err){ return toast("Couldn't read that file as text.", true); }
   }
   const V = S.vault, seen = new Set(V.logins.map(l => [l.username, l.url, l.password].join('\u0001')));
-  const recs = [], skipped = []; let dup = 0;
+  const recs = [], skipped = [], colInfo = new Map(); let dup = 0;
   for(const sh of sheets){
     const rows = sh.rows.filter(r => r.some(x => String(x).trim() !== ''));
     const hi = rows.slice(0, 10).findIndex(r => mapHeaders(r).password !== undefined);
     if(hi < 0){ if(rows.length && sh.name) skipped.push(sh.name); continue; }
-    const m = mapHeaders(rows[hi]);
+    const m = mapHeaders(rows[hi]), head = rows[hi].map(h => clean(h)), used = new Set(Object.values(m));
+    const LBL = { name:'Name', url:'Website', username:'Username', password:'Password', notes:'Note', desc:'Description', totp:'2FA key', corp:'Corp' };
+    Object.entries(m).forEach(([k, i]) => colInfo.set(`${head[i]} → ${LBL[k]}`, 1));
+    const extraIdx = head.map((h, i) => [h, i]).filter(([h, i]) => h && !used.has(i));
+    extraIdx.forEach(([h]) => colInfo.set(`${h} → Notes`, 1));
     for(const r of rows.slice(hi + 1)){
       const g = k => m[k] !== undefined ? clean(r[m[k]]) : '';
-      const rec = { name:g('name'), url:g('url'), username:g('username'), password:String(r[m.password] ?? '').replace(/^[\r\n]+|[\r\n]+$/g, ''), notes:g('notes'), corp:g('corp'), tab:clean(sh.name) };
+      const extras = extraIdx.map(([h, i]) => [h, clean(r[i])]).filter(([, v]) => v).map(([h, v]) => `${h}: ${v}`);
+      const t = g('totp'), okT = t && parseTotp(t);
+      if(t && !okT) extras.push(`2FA: ${t}`);
+      const rec = { name:g('name'), desc:g('desc'), url:g('url'), username:g('username'), password:String(r[m.password] ?? '').replace(/^[\r\n]+|[\r\n]+$/g, ''), notes:[g('notes'), ...extras].filter(Boolean).join('\n'), corp:g('corp'), tab:clean(sh.name) };
+      if(okT) rec.totp = t;
       if(!rec.password && !rec.username) continue;
       if(!rec.name) rec.name = rec.username || hostOf(rec.url) || 'Untitled';
       const sig = [rec.username, rec.url, rec.password].join('\u0001'); if(seen.has(sig)){ dup++; continue; } seen.add(sig);
@@ -1133,11 +1148,11 @@ $('#csvInput').addEventListener('change', async e => {
     if(dup) return toast(`All ${dup} rows were already in the vault.`, true);
     return toast(isBook ? 'No tab has a header row with a "password" column.' : 'No password column found. The first row needs a header named "password".', true);
   }
-  importDialog(file.name, recs, dup, skipped, isBook);
+  importDialog(file.name, recs, dup, skipped, isBook, [...colInfo.keys()]);
 });
 
 function corpList(){ return [...new Set(S.vault.logins.map(l => l.corp))].sort(cmp); }
-function importDialog(fname, recs, dup, skipped, isBook){
+function importDialog(fname, recs, dup, skipped, isBook, cols = []){
   const tally = key => { const t = {}; recs.forEach(r => { const k = key(r); t[k] = (t[k] || 0) + 1; }); return Object.entries(t).sort((a,b) => b[1]-a[1]).map(([c,n]) => `${esc(c)} (${n})`).join(', '); };
   const tabs = [...new Set(recs.map(r => r.tab))];
   const useTabs = isBook && !tabs.every(t => /^sheet\s*\d*$/i.test(t));
@@ -1145,6 +1160,7 @@ function importDialog(fname, recs, dup, skipped, isBook){
   const n = recs.length, s = n > 1 ? 's' : '';
   openDialog(`<h3>Import ${esc(fname)}</h3>
     <p class="muted" style="margin:0">${n} login${s} ready${isBook ? ` from ${tabs.length} tab${tabs.length>1?'s':''}` : ''}${dup ? `, ${dup} already in your vault will be skipped` : ''}.${skipped.length ? ` Skipped tab${skipped.length>1?'s':''} with no password column: ${skipped.map(esc).join(', ')}.` : ''} How should they be categorized?</p>
+    ${cols.length ? `<div class="colmap"><b>Columns read from the file</b><span>${cols.map(esc).join('<br>')}</span>${recs.some(r => !r.desc) ? `<span class="muted">${recs.filter(r => !r.desc).length} login${recs.filter(r => !r.desc).length === 1 ? ' has' : 's have'} no description. You can add them afterwards, or select several and use <b>Describe</b>.</span>` : ''}</div>` : ''}
     ${isBook ? `<label class="opt"><input type="radio" name="mode" value="tab"${useTabs ? ' checked' : ''}><div>Use each tab name as the corp<div class="sub">${tally(r => r.corp || r.tab || 'Uncategorized')}</div></div></label>` : ''}
     <label class="opt"><input type="radio" name="mode" value="detect"${useTabs ? '' : ' checked'}><div>Sort into corps by email domain<div class="sub">${tally(r => r.corp || r.detected)}</div></div></label>
     <label class="opt"><input type="radio" name="mode" value="one"><div style="flex:1">Put them all under one corp
@@ -1167,9 +1183,10 @@ function importDialog(fname, recs, dup, skipped, isBook){
   dform.oninput = e => { if(e.target.name === 'corp'){ const r = dform.querySelector('[value=one]'); if(r) r.checked = true; } };
 }
 
+const noteKey = l => String(l.notes || '').split('\n')[0].trim();
 const fileName = id => id === 'manual' ? 'Added by hand' : ((S.vault.files.find(f => f.id === id) || {}).name || '');
-const SORTV = { name:l => l.name, corp:l => l.corp, username:l => l.username, notes:l => l.notes, added:l => l.added || 0, file:l => fileName(l.fileId) };
-const SORTLBL = { name:['A–Z','Z–A'], corp:['A–Z','Z–A'], username:['A–Z','Z–A'], notes:['A–Z','Z–A'], file:['A–Z','Z–A'], added:['Oldest','Newest'] };
+const SORTV = { name:l => l.name, corp:l => l.corp, username:l => l.username, notes:l => noteKey(l), desc:l => l.desc || '', added:l => l.added || 0, file:l => fileName(l.fileId) };
+const SORTLBL = { desc:['A–Z','Z–A'], name:['A–Z','Z–A'], corp:['A–Z','Z–A'], username:['A–Z','Z–A'], notes:['A–Z','Z–A'], file:['A–Z','Z–A'], added:['Oldest','Newest'] };
 
 function renderLogins(){
   const V = S.vault, L = V.logins, reuse = reuseMap();
@@ -1177,7 +1194,7 @@ function renderLogins(){
   const VIEWS = { all:() => true, fav:l => !!l.fav, social:l => !!socialOf(l), risk };
   if(S.corp !== 'all' && !L.some(l => l.corp === S.corp)) S.corp = 'all';
   if(S.file !== 'all' && !L.some(l => l.fileId === S.file)) S.file = 'all';
-  if(S.note !== 'all' && !L.some(l => (l.notes || '') === S.note)) S.note = 'all';
+  if(S.note !== 'all' && !L.some(l => noteKey(l) === S.note)) S.note = 'all';
 
   // view chips
   const vc = k => L.filter(VIEWS[k]).length, riskN = vc('risk');
@@ -1199,14 +1216,14 @@ function renderLogins(){
   $('#fFile').innerHTML = `<option value="all">All files</option>` + V.files.filter(f => fileIds.includes(f.id)).map(f => `<option value="${f.id}">${esc(f.name)}</option>`).join('') + (fileIds.includes('manual') ? `<option value="manual">Added by hand</option>` : '');
   $('#fFile').value = fileIds.includes(S.file) ? S.file : 'all'; if($('#fFile').value !== S.file) S.file = 'all';
   $('#fFileDel').hidden = !V.files.some(f => f.id === S.file);
-  const notes = [...new Set(inCorp.map(l => l.notes).filter(n => n && n.length <= 40))].sort(cmp);
-  $('#fNote').innerHTML = `<option value="all">Any note</option>` + notes.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('') + (inCorp.some(l => !l.notes) ? `<option value="">No note</option>` : '');
+  const notes = [...new Set(inCorp.map(noteKey).filter(n => n && n.length <= 40))].sort(cmp);
+  $('#fNote').innerHTML = `<option value="all">Any note</option>` + notes.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('') + (inCorp.some(l => !noteKey(l)) ? `<option value="">No note</option>` : '');
   $('#fNote').value = S.note; if($('#fNote').value !== S.note){ S.note = 'all'; $('#fNote').value = 'all'; }
   $('#fSort').value = S.sort; $('#fDir').textContent = SORTLBL[S.sort][S.dir > 0 ? 0 : 1]; $('#fGroup').checked = S.group;
 
   const q = S.q.trim().toLowerCase();
-  const rows = inCorp.filter(l => (S.file === 'all' || l.fileId === S.file) && (S.note === 'all' || (l.notes || '') === S.note) &&
-    (!q || [l.name,l.url,l.username,l.notes,l.corp].join(' ').toLowerCase().includes(q)));
+  const rows = inCorp.filter(l => (S.file === 'all' || l.fileId === S.file) && (S.note === 'all' || noteKey(l) === S.note) &&
+    (!q || [l.name,l.desc,l.url,l.username,l.notes,l.corp].join(' ').toLowerCase().includes(q)));
   const get = SORTV[S.sort];
   rows.sort((a,b) => { const x = get(a), y = get(b); const c = typeof x === 'number' ? x - y : cmp(x, y); return (c || cmp(a.name, b.name)) * S.dir; });
   S.rows = rows; renderBulk();
@@ -1225,11 +1242,11 @@ function renderLogins(){
     const hw = weak ? `<span class="hw" title="Short or easy to guess">Weak</span>` : rc > 1 ? `<span class="hw" title="Same password on ${rc} accounts">Reused ×${rc}</span>` : old ? `<span class="hw old" title="Not changed in over a year">1 yr+</span>` : '';
     return `<li class="lrow" data-id="${l.id}">
       <button class="badge" data-act="sel" aria-pressed="${sel}" aria-label="${sel ? 'Deselect' : 'Select'} ${esc(l.name)}">${sel ? icon('check') : esc((l.name[0] || '?').toUpperCase())}</button>
-      <div class="who"><div class="nm" title="${esc(l.name)}">${esc(l.name)}</div>${href ? `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(hostOf(l.url))}</a>` : `<span class="src">${esc(soc && soc !== 'Social' ? soc : fileName(l.fileId))}</span>`}${l.totp ? `<button class="otp mono" data-act="otp" data-otp="${l.id}" title="Copy 2FA code">··· ···</button>` : ''}</div>
+      <div class="who"><div class="nm" title="${esc(l.name)}">${esc(l.name)}</div>${l.desc ? `<span class="desc" title="${esc(l.desc)}">${esc(l.desc)}</span>` : ''}${href ? `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(hostOf(l.url))}</a>` : (l.desc ? '' : `<span class="src">${esc(soc && soc !== 'Social' ? soc : fileName(l.fileId))}</span>`)}${l.totp ? `<button class="otp mono" data-act="otp" data-otp="${l.id}" title="Copy 2FA code">··· ···</button>` : ''}</div>
       <div class="corpcell"><span class="pill" title="${esc(l.corp)}">${esc(l.corp)}</span></div>
       <div class="fld"><span class="lbl">Username</span><span class="v" title="${esc(l.username)}">${esc(l.username) || '<span class="muted">—</span>'}</span>${l.username ? `<button class="ib" data-act="cu" aria-label="Copy username">${icon('copy')}</button>` : ''}</div>
       <div class="fld"><span class="lbl">Password</span><span class="v mono">${shown ? esc(l.password) : '••••••••••'}</span>${hw}<button class="ib" data-act="rv" aria-label="${shown?'Hide':'Show'} password">${icon(shown?'eyeoff':'eye')}</button><button class="ib" data-act="cp" aria-label="Copy password">${icon('copy')}</button></div>
-      <div class="notecell" title="${esc(l.notes)}">${esc(l.notes)}</div>
+      <div class="notecell" title="${esc(l.notes)}">${esc(noteKey(l))}${String(l.notes || '').includes('\n') ? ' <span class="more">+more</span>' : ''}</div>
       <div class="acts">${href ? `<button class="ib" data-act="go" aria-label="Copy password and open site" title="Copy password and open site">${icon('ext')}</button>` : ''}<button class="ib star" data-act="fav" aria-pressed="${!!l.fav}" aria-label="${l.fav ? 'Remove from favorites' : 'Add to favorites'}">${icon('star')}</button><button class="ib" data-act="ed" aria-label="Edit">${icon('edit')}</button><button class="ib del" data-act="dl" aria-label="Delete">${icon('trash')}</button></div>
     </li>`; };
   const head = (t, n, cls = '') => `<li class="ghead${cls}">${t} <span class="n">${n}</span></li>`;
@@ -1292,6 +1309,7 @@ function loginDialog(l){
   const opts = `<option value="manual">Added by hand</option>` + V.files.map(f => `<option value="${f.id}"${l.fileId===f.id?' selected':''}>${esc(f.name)}</option>`).join('');
   openDialog(`<h3>${isNew ? 'Add login' : 'Edit login'}</h3>
     <label class="f">Name<input class="inp" name="name" value="${esc(l.name)}" required></label>
+    <label class="f">Description<input class="inp" name="desc" value="${esc(l.desc || '')}" placeholder="What this login is for, e.g. main Instagram for client posts"></label>
     <div class="row2">
       <label class="f">Corp<input class="inp" name="corp" value="${esc(l.corp)}" list="corpDL3" placeholder="Detected from email if blank"></label>
       <label class="f">File<select class="inp" name="fileId">${opts}</select></label>
@@ -1304,11 +1322,11 @@ function loginDialog(l){
       <div class="meter" aria-hidden="true"><i id="mBar"></i></div><span id="mLbl" class="mlbl"></span></label>
     <label class="f">2FA setup key (optional)<div class="pw-wrap"><input class="inp mono" type="password" name="totp" value="${esc(l.totp || '')}" spellcheck="false" autocomplete="off" placeholder="Base32 key or otpauth:// link"><div class="tools"><button type="button" class="ib" data-peek2="totp" aria-label="Show 2FA key">${icon('eye')}</button></div></div></label>
     ${(l.history || []).length ? `<details class="hist"><summary>Previous passwords (${l.history.length})</summary><ul>${l.history.map((h, i) => `<li><span class="mono" data-h="${i}">••••••••</span><span class="muted">until ${new Date(h.at).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}</span><button type="button" class="ib" data-hrev="${i}" aria-label="Show">${icon('eye')}</button><button type="button" class="ib" data-copy="${esc(h.p)}" data-label="Old password" aria-label="Copy">${icon('copy')}</button><button type="button" class="btn" data-hres="${i}" style="padding:4px 10px">Restore</button></li>`).join('')}</ul></details>` : ''}
-    <label class="f">Note<textarea class="inp" name="notes" rows="2">${esc(l.notes)}</textarea></label>
+    <label class="f">Notes<textarea class="inp" name="notes" rows="3">${esc(l.notes)}</textarea></label>
     <div class="row2"><label class="ack"><input type="checkbox" name="social"${socialOf(l) ? ' checked' : ''}>Social media account</label><label class="ack"><input type="checkbox" name="fav"${l.fav ? ' checked' : ''}>Favorite</label></div>
     <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="save">${isNew ? 'Add login' : 'Save changes'}</button></div>`,
   async fd => {
-    const rec = { name:clean(fd.get('name')), url:clean(fd.get('url')), username:clean(fd.get('username')), password:String(fd.get('password') || ''), notes:String(fd.get('notes') || '').trim(), fileId:String(fd.get('fileId') || 'manual') };
+    const rec = { name:clean(fd.get('name')), desc:clean(fd.get('desc')), url:clean(fd.get('url')), username:clean(fd.get('username')), password:String(fd.get('password') || ''), notes:String(fd.get('notes') || '').trim(), fileId:String(fd.get('fileId') || 'manual') };
     rec.corp = clean(fd.get('corp')) || corpOf(rec);
     const wantSoc = fd.get('social') === 'on', autoSoc = !!socialOf({ ...rec, social:undefined });
     rec.social = wantSoc === autoSoc ? undefined : wantSoc; rec.fav = fd.get('fav') === 'on';
@@ -1701,6 +1719,11 @@ $('#bulk').addEventListener('click', e => {
   if(act === 'all'){ (S.rows || []).forEach(l => S.sel.add(l.id)); return renderLogins(); }
   if(act === 'clear'){ S.sel.clear(); return renderLogins(); }
   if(act === 'fav' || act === 'unfav'){ picked.forEach(l => l.fav = act === 'fav'); save(false); renderLogins(); return toast(`${picked.length} login${picked.length>1?'s':''} ${act === 'fav' ? 'added to' : 'removed from'} favorites.`); }
+  if(act === 'desc') return openDialog(`<h3>Describe ${picked.length} login${picked.length>1?'s':''}</h3>
+    <p class="muted" style="margin:0">Sets the same description on every selected login, replacing any they already have.</p>
+    <label class="f">Description<input class="inp" name="desc" required placeholder="What these logins are for"></label>
+    <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Save description</button></div>`,
+    async fd => { const d = clean(fd.get('desc')); if(!d) return false; picked.forEach(l => l.desc = d); S.sel.clear(); await save(); render(); toast(`Description added to ${picked.length} login${picked.length>1?'s':''}.`); });
   if(act === 'move') return openDialog(`<h3>Move ${picked.length} login${picked.length>1?'s':''}</h3>
     <label class="f">To corp<input class="inp" name="corp" list="corpDL4" required placeholder="Corp name"></label><datalist id="corpDL4">${corpList().map(c => `<option value="${esc(c)}">`).join('')}</datalist>
     <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Move</button></div>`,
