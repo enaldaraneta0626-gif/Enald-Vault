@@ -46,26 +46,68 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 
 /* ---------- Lock screen ---------- */
 .themecorner{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:12px;z-index:5;border:1px solid var(--line);background:var(--surface)}
-#lock{height:100%;display:grid;place-items:center;padding:24px;overflow:auto;
-  background:radial-gradient(60rem 40rem at 50% 20%,var(--glow),transparent 70%),var(--bg)}
-.lock-inner{width:100%;max-width:380px;text-align:center}
-.dial{width:200px;height:200px;margin:0 auto 18px;position:relative}
-.dial svg{width:100%;height:100%;overflow:visible}
+#lock{height:100%;display:grid;place-items:center;padding:32px 24px;overflow:auto;position:relative;isolation:isolate;background:var(--bg)}
+#lock::before{content:"";position:fixed;inset:-25%;z-index:-2;pointer-events:none;
+  background:radial-gradient(38% 32% at 22% 30%,rgba(124,231,255,.22),transparent 70%),radial-gradient(34% 30% at 78% 72%,rgba(183,155,255,.26),transparent 70%),radial-gradient(28% 26% at 62% 18%,rgba(255,155,213,.14),transparent 70%);
+  filter:blur(24px);animation:drift 38s ease-in-out infinite alternate}
+#lock::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+  background-image:radial-gradient(circle,var(--line) 1px,transparent 1.4px);background-size:28px 28px;
+  -webkit-mask-image:radial-gradient(70% 60% at 50% 50%,#000,transparent);mask-image:radial-gradient(70% 60% at 50% 50%,#000,transparent)}
+@keyframes drift{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(4%,-3%) rotate(8deg)}}
+.lock-stage{width:100%;max-width:1000px;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,6vw,72px);align-items:center;transition:opacity .45s,transform .45s}
+#lock.leaving .lock-stage{opacity:0;transform:scale(1.04)}
+.lock-hero{display:grid;justify-items:center;text-align:center;gap:6px}
+.lock-hero .dial{width:min(320px,62vw);margin:0 0 14px}
+.lock-clock{display:grid;gap:2px;margin-top:6px}
+.lock-clock b{font:500 44px/1 var(--display);letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.lock-clock span{color:var(--muted);font-size:14px}
+.lock-sync{margin:8px 0 0;font-size:13px;color:var(--accent-2);min-height:1.2em}
+.lock-card{width:100%;max-width:420px;justify-self:center;padding:32px;border-radius:22px;border:1px solid var(--line);
+  background:color-mix(in srgb,var(--surface) 78%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+  box-shadow:0 30px 80px -30px rgba(10,8,40,.45),inset 0 1px 0 rgba(255,255,255,.06)}
+.lock-title{font:600 26px/1.15 var(--display);letter-spacing:.02em;margin:0 0 6px}
+.lock-card .lock-sub{margin:0 0 22px;font-size:14px}
+.lock-card .btn.primary{padding:13px 16px;margin-top:4px;background:var(--text);border-color:var(--text);position:relative;overflow:hidden}
+.lock-card .btn.primary::after{content:"";position:absolute;inset:0;background:var(--holo);opacity:0;mix-blend-mode:overlay;transition:opacity .25s}
+.lock-card .btn.primary:hover::after{opacity:.55}
+.lock-card .inp{padding:13px 14px;background:color-mix(in srgb,var(--bg) 60%,transparent)}
+.caps{margin:-4px 0 0;font-size:13px;font-weight:600;color:#C98A00}
+.lock-card .fineprint{text-align:center}
+.dial{width:200px;aspect-ratio:1;margin:0 auto 18px;position:relative}
+.dial .ring-num{transform-origin:100px 100px;color:var(--muted);font-family:var(--mono);transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .8s}
+.dial .pointer{filter:drop-shadow(0 0 4px rgba(124,231,255,.6))}
+.dial.open .ring-num{opacity:0}
+.dial.fail .ring-num{color:var(--danger)}
+@media (max-width:860px){
+  #lock{place-items:start center;padding-top:calc(28px + env(safe-area-inset-top,0px))}
+  .lock-stage{grid-template-columns:1fr;gap:20px;max-width:440px}
+  .lock-hero{grid-template-columns:auto 1fr;justify-items:start;text-align:left;column-gap:16px;align-items:center}
+  .lock-hero .dial{width:84px;height:84px;margin:0;grid-row:span 2;align-self:center}
+  .lock-hero h1.brand{margin:0;font-size:24px;align-self:end}
+  .lock-clock{margin:0;align-self:start}
+  .lock-clock b{font-size:15px;font-family:var(--body);letter-spacing:0;display:inline}
+  .lock-clock span{font-size:13px}
+  .lock-sync{grid-column:1/-1;margin:0}
+  .lock-sync:empty{display:none}
+  .lock-card{padding:24px 20px}
+}
+.dial>svg{display:block;width:100%;height:100%;overflow:visible}
 .dial .ring-outer{transform-origin:100px 100px;animation:spin 60s linear infinite}
 .dial .ring-mid{transform-origin:100px 100px;animation:spin 90s linear infinite reverse}
 .dial.busy .ring-outer{animation-duration:2.4s}
 .dial.busy .ring-mid{animation-duration:3.2s}
 .dial.open .ring-outer,.dial.open .ring-mid{animation:none;transition:transform .8s cubic-bezier(.2,.8,.2,1),opacity .8s;opacity:0;transform:scale(1.4)}
 .dial.shake{animation:shake .45s}
-.dial-core{position:absolute;inset:62px;border-radius:50%;background:var(--holo);
+.dial-core{position:absolute;inset:31%;border-radius:50%;background:var(--holo);
   display:grid;place-items:center;box-shadow:0 0 40px var(--glow)}
 .dial-core::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--surface)}
-.dial-core svg{position:relative;z-index:1;width:30px;height:30px;stroke:var(--text)}
+.dial-core svg{position:relative;z-index:1;width:34%;height:34%;stroke:var(--text)}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 h1.brand{font:600 30px/1.1 var(--display);letter-spacing:.04em;margin:0 0 6px}
 .lock-sub{color:var(--muted);margin:0 0 22px}
 .lock-form{display:grid;gap:12px;text-align:left}
+.lock-msg:empty{display:none}
 .lock-msg{min-height:1.5em;color:var(--danger);font-size:14px;margin:4px 0 0}
 .fineprint{color:var(--muted);font-size:13px;margin-top:20px}
 
@@ -354,7 +396,8 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
 <!-- ============ LOCK SCREEN ============ -->
 <section id="lock" aria-label="Unlock vault">
   <button class="ib themecorner" data-themebtn="icon" type="button"></button>
-  <div class="lock-inner">
+  <div class="lock-stage">
+  <div class="lock-hero">
     <div class="dial" id="dial" aria-hidden="true">
       <svg viewBox="0 0 200 200">
         <defs>
@@ -367,10 +410,17 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
           <circle cx="100" cy="100" r="66" fill="none" stroke="url(#g1)" stroke-width="1.5" stroke-dasharray="3 7"/>
           <circle cx="100" cy="34" r="3" fill="url(#g1)"/>
         </g>
+        <g class="ring-num" id="ringNum"></g>
+        <path class="pointer" d="M95 0 H105 L100 9 Z" fill="url(#g1)"/>
       </svg>
       <div class="dial-core"><svg class="i"><use href="#i-lock"/></svg></div>
     </div>
     <h1 class="brand">Nightvault</h1>
+    <div class="lock-clock" aria-hidden="true"><b id="clockT"></b><span id="clockD"></span></div>
+    <p class="lock-sync" id="lockSync"></p>
+  </div>
+  <div class="lock-card">
+    <h2 class="lock-title" id="lockTitle">Welcome back</h2>
     <p class="lock-sub" id="lockSub">Unlock with your username and master password.</p>
 
     <form class="lock-form" id="unlockForm" autocomplete="off" hidden>
@@ -379,6 +429,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
         <div class="pw-wrap"><input class="inp" type="password" name="pass" required autocomplete="current-password">
           <div class="tools"><button type="button" class="ib" data-peek aria-label="Show password"><svg class="i"><use href="#i-eye"/></svg></button></div></div>
       </label>
+      <p class="caps" hidden>Caps Lock is on</p>
       <button class="btn primary" type="submit" id="unlockBtn">Unlock vault</button>
       <p class="lock-msg" id="unlockMsg" role="alert"></p>
       <button type="button" class="linkbtn" id="forgotBtn">Forgot password?</button>
@@ -389,6 +440,7 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
       <label class="f">Username<input class="inp" name="user" required minlength="3" autocomplete="username" spellcheck="false" autocapitalize="off"></label>
       <label class="f">New master password (12+ characters)<input class="inp" type="password" name="pass" required minlength="12" autocomplete="new-password"></label>
       <label class="f">Confirm new password<input class="inp" type="password" name="pass2" required minlength="12" autocomplete="new-password"></label>
+      <p class="caps" hidden>Caps Lock is on</p>
       <button class="btn primary" type="submit" id="recoverBtn">Reset password</button>
       <p class="lock-msg" id="recoverMsg" role="alert"></p>
       <button type="button" class="linkbtn" id="backBtn">Back to unlock</button>
@@ -401,11 +453,13 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
           <div class="tools"><button type="button" class="ib" data-peek aria-label="Show password"><svg class="i"><use href="#i-eye"/></svg></button></div></div>
       </label>
       <label class="f">Confirm master password<input class="inp" type="password" name="pass2" required minlength="12" autocomplete="new-password"></label>
+      <p class="caps" hidden>Caps Lock is on</p>
       <button class="btn primary" type="submit" id="setupBtn">Create vault</button>
       <p class="lock-msg" id="setupMsg" role="alert"></p>
     </form>
 
-    <p class="fineprint" id="fineprint">AES-256 encryption, done in your browser. There is no password reset — if you forget it, the vault can't be opened.</p>
+    <p class="fineprint" id="fineprint">AES-256 encryption, done in your browser.</p>
+  </div>
   </div>
 </section>
 
@@ -836,25 +890,35 @@ function normalize(data){
 (() => { const g = $('#ticks'); let h = '';
   for(let i=0;i<72;i++){ const a = i*5*Math.PI/180, long = i%6===0, r1 = long ? 84 : 88, r2 = 94;
     h += `<line x1="${100+r1*Math.sin(a)}" y1="${100-r1*Math.cos(a)}" x2="${100+r2*Math.sin(a)}" y2="${100-r2*Math.cos(a)}" stroke="url(#g1)" stroke-width="${long?2:1}" opacity="${long?1:.55}"/>`; }
-  g.innerHTML = h; })();
+  g.innerHTML = h;
+  let n = ''; for(let i = 0; i < 12; i++){ const a = i * 30 * Math.PI / 180, x = 100 + 52 * Math.sin(a), y = 100 - 52 * Math.cos(a);
+    n += `<text x="${x}" y="${y + 2.8}" text-anchor="middle" font-size="7.5" fill="currentColor" transform="rotate(${i*30} ${x} ${y})">${String(i * 5).padStart(2, '0')}</text>`; }
+  $('#ringNum').innerHTML = n; })();
+// The numbered ring turns like a combination lock as you type.
+$$('#lock [name=pass]').forEach(inp => inp.addEventListener('input', () => { $('#ringNum').style.transform = `rotate(${-inp.value.length * 30}deg)`; }));
+$$('#lock input').forEach(inp => ['keydown','keyup'].forEach(ev => inp.addEventListener(ev, e => {
+  const c = inp.closest('form').querySelector('.caps'); if(c && e.getModifierState) c.hidden = !e.getModifierState('CapsLock'); })));
+function tickClock(){ const n = new Date(); $('#clockT').textContent = n.toLocaleTimeString(undefined, { hour:'2-digit', minute:'2-digit' }); $('#clockD').textContent = n.toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' }); }
+tickClock(); setInterval(() => { if(!$('#lock').hidden) tickClock(); }, 10000);
 
 /* ---------- lock screen ---------- */
 function getFails(){ try { return JSON.parse(store.get(FKEY)) || {n:0,t:0}; } catch(e){ return {n:0,t:0}; } }
 function waitLeft(){ const f = getFails(); if(f.n < 3) return 0; return Math.max(0, f.t + Math.min(5 * 2 ** (f.n - 3), 600) * 1000 - Date.now()); }
 function addFail(){ const f = getFails(); f.n++; f.t = Date.now(); store.set(FKEY, JSON.stringify(f)); return waitLeft(); }
-function failAnim(){ const d = $('#dial'); d.classList.remove('shake'); void d.offsetWidth; d.classList.add('shake'); }
+function failAnim(){ const d = $('#dial'); d.classList.remove('shake','fail'); void d.offsetWidth; d.classList.add('shake','fail'); setTimeout(() => d.classList.remove('fail'), 1200); }
 function busyDial(on){ $('#dial').classList.toggle('busy', on); }
 
 function showLock(mode){
   const v = readVault();
   mode = mode || (v ? 'unlock' : 'setup');
-  $('#app').hidden = true; $('#lock').hidden = false; $('#dial').classList.remove('open','busy');
+  $('#app').hidden = true; $('#lock').hidden = false; $('#lock').classList.remove('leaving'); $('#dial').classList.remove('open','busy','fail'); $('#ringNum').style.transform = ''; $$('#lock .caps').forEach(c => c.hidden = true); tickClock();
+  $('#lockTitle').textContent = mode === 'setup' ? 'Create your vault' : mode === 'recover' ? 'Reset your password' : 'Welcome back';
   $('#unlockForm').hidden = mode !== 'unlock'; $('#setupForm').hidden = mode !== 'setup'; $('#recoverForm').hidden = mode !== 'recover';
   $$('#lock form').forEach(f => f.reset()); $$('.lock-msg').forEach(m => m.textContent = '');
   const to = v && v.rcTo ? v.rcTo : DEFAULT_RC;
-  $('#lockSub').textContent = mode === 'setup' ? 'Create your vault. Only this username and password will open it.'
+  $('#lockSub').textContent = mode === 'setup' ? 'Only the username and password you choose here will open it.'
     : mode === 'recover' ? `Paste the recovery key that was emailed to ${to.map(maskEmail).join(' and ')}, then choose a new password.`
-    : 'Unlock with your username and master password.';
+    : 'Enter your username and master password to unlock.';
   $('#fineprint').textContent = mode === 'setup' ? "Right after this you'll get a recovery key to email to yourself. It's the only way back in if you forget your password." : 'AES-256 encryption, done in your browser.';
   setTimeout(() => { const f = $(`#${mode}Form input`); f && f.focus(); }, 50);
 }
@@ -940,7 +1004,7 @@ $('#recoverForm').addEventListener('submit', async e => {
 });
 
 function openApp(){
-  $('#dial').classList.add('open');
+  $('#dial').classList.add('open'); $('#lock').classList.add('leaving');
   setTimeout(() => {
     $$('#lock form').forEach(f => f.reset());
     $('#lock').hidden = true; $('#app').hidden = false;
@@ -1059,6 +1123,7 @@ const COLS = {
   password:['password','login_password','pass','passwd','pwd'],
   notes:['notes','note','extra','comments','comment','status','remarks','remark','memo'],
   desc:['description','desc','purpose','used for','use','usage','for','what for',"what it's for",'what its for','details','about','info','account for','account type','role'],
+  newpw:['new password','new pass','new pw','updated password','current password','latest password'],
   totp:['totp','otp','2fa','2fa secret','2fa key','authenticator','authenticator key','mfa','mfa secret','mfa key'],
   corp:['corp','corporation','company','organization','organisation','org','client','business','brand']
 };
@@ -1120,65 +1185,86 @@ $('#csvInput').addEventListener('change', async e => {
   } else {
     try { sheets = [{ name:'', rows: parseCSV(await file.text()) }]; } catch(err){ return toast("Couldn't read that file as text.", true); }
   }
-  const V = S.vault, seen = new Set(V.logins.map(l => [l.username, l.url, l.password].join('\u0001')));
-  const recs = [], skipped = [], colInfo = new Map(); let dup = 0;
+  const V = S.vault, low = x => String(x || '').trim().toLowerCase();
+  const sigOf = l => [low(l.username), low(l.url), l.password || ''].join('\u0001');
+  const existing = new Map(); V.logins.forEach(l => existing.set(sigOf(l), l));
+  const recs = [], updates = [], skipped = [], colInfo = new Map(), seenNew = new Set(); let dup = 0;
+  const LBL = { name:'Name', url:'Website', username:'Username', password:'Password', newpw:'Password (newer one wins)', notes:'Notes', desc:'Description', totp:'2FA key', corp:'Corp' };
   for(const sh of sheets){
-    const rows = sh.rows.filter(r => r.some(x => String(x).trim() !== ''));
-    const hi = rows.slice(0, 10).findIndex(r => mapHeaders(r).password !== undefined);
+    const rows = sh.rows.filter(r => r.some(x => String(x ?? '').trim() !== ''));
+    const hi = rows.slice(0, 10).findIndex(r => { const mm = mapHeaders(r); return mm.password !== undefined || mm.username !== undefined; });
     if(hi < 0){ if(rows.length && sh.name) skipped.push(sh.name); continue; }
     const m = mapHeaders(rows[hi]), head = rows[hi].map(h => clean(h)), used = new Set(Object.values(m));
-    const LBL = { name:'Name', url:'Website', username:'Username', password:'Password', notes:'Note', desc:'Description', totp:'2FA key', corp:'Corp' };
     Object.entries(m).forEach(([k, i]) => colInfo.set(`${head[i]} → ${LBL[k]}`, 1));
     const extraIdx = head.map((h, i) => [h, i]).filter(([h, i]) => h && !used.has(i));
     extraIdx.forEach(([h]) => colInfo.set(`${h} → Notes`, 1));
     for(const r of rows.slice(hi + 1)){
       const g = k => m[k] !== undefined ? clean(r[m[k]]) : '';
+      const raw = k => m[k] !== undefined ? String(r[m[k]] ?? '').replace(/^[\r\n]+|[\r\n]+$/g, '') : '';
       const extras = extraIdx.map(([h, i]) => [h, clean(r[i])]).filter(([, v]) => v).map(([h, v]) => `${h}: ${v}`);
       const t = g('totp'), okT = t && parseTotp(t);
       if(t && !okT) extras.push(`2FA: ${t}`);
-      const rec = { name:g('name'), desc:g('desc'), url:g('url'), username:g('username'), password:String(r[m.password] ?? '').replace(/^[\r\n]+|[\r\n]+$/g, ''), notes:[g('notes'), ...extras].filter(Boolean).join('\n'), corp:g('corp'), tab:clean(sh.name) };
+      const oldPw = raw('password'), newPw = raw('newpw');
+      const rec = { name:g('name'), desc:g('desc'), url:g('url'), username:g('username'), password:newPw || oldPw,
+        notes:[g('notes'), ...extras].filter(Boolean).join('\n'), corp:g('corp'), tab:clean(sh.name) };
+      if(newPw && oldPw && newPw !== oldPw){ rec.history = [{ p:oldPw, at:Date.now() }]; rec.pwChanged = Date.now(); }
       if(okT) rec.totp = t;
       if(!rec.password && !rec.username) continue;
-      if(!rec.name) rec.name = rec.username || hostOf(rec.url) || 'Untitled';
-      const sig = [rec.username, rec.url, rec.password].join('\u0001'); if(seen.has(sig)){ dup++; continue; } seen.add(sig);
+      if(!rec.name) rec.name = rec.username || hostOf(rec.url) || rec.desc || 'Untitled';
+      const sig = sigOf(rec), key = sig + '\u0001' + low(rec.desc);
+      if(seenNew.has(key)){ dup++; continue; } seenNew.add(key);
+      // Same login already in the vault: fill in what it's missing instead of adding a copy.
+      const ex = existing.get(sig);
+      if(ex && (!ex.desc || low(ex.desc) === low(rec.desc))){
+        const ch = {};
+        if(rec.desc && !ex.desc) ch.desc = rec.desc;
+        if(rec.notes && !String(ex.notes || '').includes(rec.notes)) ch.notes = ex.notes ? `${ex.notes}\n${rec.notes}` : rec.notes;
+        if(rec.totp && !ex.totp) ch.totp = rec.totp;
+        if(Object.keys(ch).length) updates.push([ex, ch]); else dup++;
+        continue;
+      }
       rec.detected = corpOf(rec); recs.push(rec);
     }
   }
-  if(!recs.length){
+  if(!recs.length && !updates.length){
     if(dup) return toast(`All ${dup} rows were already in the vault.`, true);
-    return toast(isBook ? 'No tab has a header row with a "password" column.' : 'No password column found. The first row needs a header named "password".', true);
+    return toast(isBook ? 'No tab has a header row with an email, username or password column.' : 'No usable columns found. The first row needs headers such as "email" and "password".', true);
   }
-  importDialog(file.name, recs, dup, skipped, isBook, [...colInfo.keys()]);
+  importDialog(file.name, recs, dup, skipped, isBook, [...colInfo.keys()], updates);
 });
 
 function corpList(){ return [...new Set(S.vault.logins.map(l => l.corp))].sort(cmp); }
-function importDialog(fname, recs, dup, skipped, isBook, cols = []){
+const corpKey = c => String(c || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+function matchCorp(c){ const k = corpKey(c); return (k && corpList().find(x => corpKey(x) === k)) || c; }
+function importDialog(fname, recs, dup, skipped, isBook, cols = [], updates = []){
   const tally = key => { const t = {}; recs.forEach(r => { const k = key(r); t[k] = (t[k] || 0) + 1; }); return Object.entries(t).sort((a,b) => b[1]-a[1]).map(([c,n]) => `${esc(c)} (${n})`).join(', '); };
   const tabs = [...new Set(recs.map(r => r.tab))];
   const useTabs = isBook && !tabs.every(t => /^sheet\s*\d*$/i.test(t));
-  const guess = clean(fname.replace(/\.(csv|xlsx)$/i,'').split(/[-_ ]+/).filter(w => !/^(active|emails?|logins?|passwords?|export|accounts?|list|\d+)$/i.test(w)).join(' '));
-  const n = recs.length, s = n > 1 ? 's' : '';
+  const guess = clean(fname.replace(/\.(csv|xlsx)$/i,'').split(/[-_ ]+/).filter(w => !/^(active|emails?|logins?|passwords?|export|accounts?|list|\d+|\(\d+\))$/i.test(w)).join(' '));
+  const n = recs.length, s = n === 1 ? '' : 's', u = updates.length, noDesc = recs.filter(r => !r.desc).length, noPw = recs.filter(r => !r.password).length;
+  const summary = [n ? `${n} new login${s}${isBook ? ` from ${tabs.length} tab${tabs.length>1?'s':''}` : ''}` : '', u ? `${u} existing login${u===1?'':'s'} will get the description or notes from this file` : '', dup ? `${dup} already in your vault will be skipped` : ''].filter(Boolean).join(', ');
   openDialog(`<h3>Import ${esc(fname)}</h3>
-    <p class="muted" style="margin:0">${n} login${s} ready${isBook ? ` from ${tabs.length} tab${tabs.length>1?'s':''}` : ''}${dup ? `, ${dup} already in your vault will be skipped` : ''}.${skipped.length ? ` Skipped tab${skipped.length>1?'s':''} with no password column: ${skipped.map(esc).join(', ')}.` : ''} How should they be categorized?</p>
-    ${cols.length ? `<div class="colmap"><b>Columns read from the file</b><span>${cols.map(esc).join('<br>')}</span>${recs.some(r => !r.desc) ? `<span class="muted">${recs.filter(r => !r.desc).length} login${recs.filter(r => !r.desc).length === 1 ? ' has' : 's have'} no description. You can add them afterwards, or select several and use <b>Describe</b>.</span>` : ''}</div>` : ''}
-    ${isBook ? `<label class="opt"><input type="radio" name="mode" value="tab"${useTabs ? ' checked' : ''}><div>Use each tab name as the corp<div class="sub">${tally(r => r.corp || r.tab || 'Uncategorized')}</div></div></label>` : ''}
-    <label class="opt"><input type="radio" name="mode" value="detect"${useTabs ? '' : ' checked'}><div>Sort into corps by email domain<div class="sub">${tally(r => r.corp || r.detected)}</div></div></label>
+    <p class="muted" style="margin:0">${summary}.${skipped.length ? ` Skipped tab${skipped.length>1?'s':''} with no email, username or password column: ${skipped.map(esc).join(', ')}.` : ''}${n ? ' How should the new ones be categorized?' : ''}</p>
+    ${cols.length ? `<div class="colmap"><b>Columns read from the file</b><span>${cols.map(esc).join('<br>')}</span>${noDesc ? `<span class="muted">${noDesc} new login${noDesc === 1 ? ' has' : 's have'} no description. Select them afterwards and use <b>Describe</b>.</span>` : ''}${noPw ? `<span class="muted">${noPw} ${noPw === 1 ? 'has' : 'have'} no password in the file and will be imported without one.</span>` : ''}</div>` : ''}
+    ${n ? `${isBook ? `<label class="opt"><input type="radio" name="mode" value="tab"${useTabs ? ' checked' : ''}><div>Use each tab name as the corp<div class="sub">${tally(r => matchCorp(r.corp || r.tab || 'Uncategorized'))}</div></div></label>` : ''}
+    <label class="opt"><input type="radio" name="mode" value="detect"${useTabs ? '' : ' checked'}><div>Sort into corps by email domain<div class="sub">${tally(r => matchCorp(r.corp || r.detected))}</div></div></label>
     <label class="opt"><input type="radio" name="mode" value="one"><div style="flex:1">Put them all under one corp
       <input class="inp" name="corp" list="corpDL" value="${esc(guess)}" placeholder="Corp name" style="margin-top:8px"></div></label>
-    <datalist id="corpDL">${corpList().map(c => `<option value="${esc(c)}">`).join('')}</datalist>
-    <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Import ${n} login${s}</button></div>`,
+    <datalist id="corpDL">${corpList().map(c => `<option value="${esc(c)}">`).join('')}</datalist>` : ''}
+    <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">${n ? `Import ${n} login${s}` : `Update ${u} login${u===1?'':'s'}`}</button></div>`,
   async fd => {
     const mode = fd.get('mode'), one = clean(fd.get('corp'));
-    if(mode === 'one' && !one){ toast('Type a corp name, or choose another option.', true); return false; }
+    if(n && mode === 'one' && !one){ toast('Type a corp name, or choose another option.', true); return false; }
     const V = S.vault, fileId = uid(), now = Date.now();
     for(const r of recs){
       const { detected, tab, ...rest } = r;
-      const corp = mode === 'one' ? one : mode === 'tab' ? (r.corp || tab || detected) : (r.corp || detected);
-      V.logins.push({ ...rest, id:uid(), fileId, corp, added:now });
+      const corp = matchCorp(mode === 'one' ? one : mode === 'tab' ? (r.corp || tab || detected) : (r.corp || detected));
+      V.logins.push({ ...rest, id:uid(), fileId, corp, added:now, pwChanged: rest.pwChanged || now });
     }
-    V.files.push({ id:fileId, name:fname, importedAt:now, count:n });
-    await save(); Object.assign(S, { corp:'all', file:fileId, note:'all' }); render();
-    toast(`Imported ${n} from ${fname}. Delete the original file now — it isn't encrypted.`);
+    updates.forEach(([ex, ch]) => Object.assign(ex, ch));
+    if(n) V.files.push({ id:fileId, name:fname, importedAt:now, count:n });
+    await save(); Object.assign(S, { view:'all', corp:'all', file: n ? fileId : 'all', note:'all' }); render();
+    toast(`${n ? `Imported ${n}` : ''}${n && u ? ' and ' : ''}${u ? `updated ${u}` : ''} from ${fname}. Delete the original file now — it isn't encrypted.`);
   });
   dform.oninput = e => { if(e.target.name === 'corp'){ const r = dform.querySelector('[value=one]'); if(r) r.checked = true; } };
 }
@@ -1527,6 +1613,7 @@ function setSyncStatus(st, at){
   const txt = { checking:'Checking sync…', unavailable:'Sync isn’t available in this view.', error:'Sync hit a problem. It will retry on your next change.', full:'Sync storage is full.', syncing:'Syncing…' }[st]
     || (on ? `Synced${SYNC.at ? ' ' + timeAgo(SYNC.at) : ''}` : 'Sync is off');
   const line = $('#syncLine'); if(line) line.textContent = txt;
+  const ls = $('#lockSync'); if(ls) ls.textContent = on && SYNC.ready ? 'Encrypted sync is on' : '';
   const s = $('#syncStatus'); if(s) s.textContent = on ? txt + '. Changes upload a moment after you make them, and your other devices update automatically.' : (st === 'unavailable' ? txt + ' Open this page on claude.ai while signed in.' : 'Sync is off. This vault lives only in this browser.');
   const b = $('#syncToggle'); if(b){ b.textContent = on ? 'Turn off sync' : 'Turn on sync'; b.disabled = !SYNC.ready; b.className = on ? 'btn danger' : 'btn primary'; }
 }
