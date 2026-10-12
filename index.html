@@ -45,6 +45,7 @@ button{cursor:pointer}
 svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 
 /* ---------- Lock screen ---------- */
+.themecorner{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:12px;z-index:5;border:1px solid var(--line);background:var(--surface)}
 #lock{height:100%;display:grid;place-items:center;padding:24px;overflow:auto;
   background:radial-gradient(60rem 40rem at 50% 20%,var(--glow),transparent 70%),var(--bg)}
 .lock-inner{width:100%;max-width:380px;text-align:center}
@@ -122,7 +123,7 @@ main{overflow:auto;min-width:0}
 
 /* Logins list */
 .list{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
-.lrow,.lhead{display:grid;grid-template-columns:38px minmax(0,1.35fr) minmax(0,.8fr) minmax(0,1.1fr) minmax(0,1fr) minmax(0,.6fr) 72px;gap:14px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
+.lrow,.lhead{display:grid;grid-template-columns:38px minmax(0,1.35fr) minmax(0,.8fr) minmax(0,1.1fr) minmax(0,1.15fr) minmax(0,.6fr) 140px;gap:14px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
 .lrow:first-child,.lhead{border-top:0}
 .lhead{padding-top:10px;padding-bottom:10px;background:var(--surface-2);font-size:12px;color:var(--muted);font-weight:600;position:sticky;top:0;z-index:1}
 .lhead button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:4px;border-radius:4px}
@@ -138,6 +139,43 @@ main{overflow:auto;min-width:0}
 .filters label{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);font-weight:500}
 .filters .tog{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer}
 .filters .tog input{accent-color:var(--accent-2);width:16px;height:16px}
+.views{margin-bottom:8px}
+button.badge{border:1px solid transparent;cursor:pointer;padding:0}
+button.badge:hover{border-color:var(--accent)}
+button.badge[aria-pressed="true"]{background:var(--accent-2);color:#fff}
+button.badge svg{width:18px;height:18px}
+.selall{all:unset;cursor:pointer;width:38px;display:grid;place-items:center;color:var(--muted)}
+.selall:focus-visible{outline:2px solid var(--accent)}
+.otp{display:inline-block;margin-top:3px;border:1px solid var(--line);background:var(--surface-2);color:var(--accent-2);border-radius:6px;padding:1px 7px;font-size:12px;cursor:pointer}
+.hw.old{color:var(--muted)}
+.bulk{position:sticky;bottom:12px;margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;border:1px solid var(--accent-2);border-radius:14px;background:var(--surface);box-shadow:0 12px 30px rgba(0,0,0,.25);z-index:3}
+.bulk b{margin-right:auto;font-size:14px}
+.bulk .btn{padding:7px 12px;font-size:13px}
+.hist summary{cursor:pointer;font-size:13px;color:var(--muted);font-weight:600}
+.hist ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
+.hist li{display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--surface-2);border-radius:8px;font-size:13px}
+.hist li .mono{flex:1;min-width:0;overflow-wrap:anywhere}
+.snotes{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.snote{display:grid;gap:6px;justify-items:start;text-align:left;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.snote:hover{border-color:var(--accent)}
+.snote .st{font:600 16px var(--display)}
+.snote .sp,.snote .sd{font-size:13px;color:var(--muted)}
+.sbody{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--surface-2);border-radius:10px;padding:14px;min-height:80px;max-height:50vh;overflow:auto}
+.sbody[data-hidden="1"]{color:var(--muted);font-family:var(--body)}
+.views .chip svg{width:14px;height:14px}
+.chip.alert .n{color:var(--danger);font-weight:700}
+.ghead svg{width:15px;height:15px;color:var(--accent-2)}
+.hw{flex:none;font-size:11px;font-weight:700;color:var(--danger);border:1px solid currentColor;border-radius:6px;padding:0 6px;margin:0 2px;white-space:nowrap}
+.ib.star[aria-pressed="true"]{color:#E8B931}
+.ib.star[aria-pressed="true"] svg{fill:currentColor}
+.meter{height:4px;border-radius:4px;background:var(--surface-2);overflow:hidden;margin-top:6px}
+.meter i{display:block;height:100%;width:0;background:var(--danger);transition:width .2s}
+.meter i[data-lvl="2"]{background:#E8B931}
+.meter i[data-lvl="3"]{background:var(--ok)}
+.mlbl{font-size:12px;min-height:1.2em}
+.nudge{max-width:992px;margin:18px clamp(16px,4vw,44px) -10px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:12px 16px;border:1px solid var(--accent-2);border-radius:14px;background:var(--surface);font-size:14px}
+@media (min-width:1168px){.nudge{margin-left:auto;margin-right:auto}}
+.nudge span{flex:1 1 280px}
 .resultcount{font-size:13px;color:var(--muted);margin-left:auto}
 .badge{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font:600 16px var(--display);background:var(--surface-2);color:var(--accent-2)}
 .who{min-width:0}
@@ -248,6 +286,10 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
 /* ---------- Mobile ---------- */
 @media (max-width:820px){
   .lhead{display:none}
+  .rail-foot [data-themebtn]{display:none}
+  #toasts{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+  .bulk{bottom:8px}
+  .nav{padding:7px 4px}
   .lrow{grid-template-columns:38px minmax(0,1fr) auto;row-gap:6px}
   .lrow .fld,.lrow .corpcell,.lrow .notecell{grid-column:2/4}
   .lrow .notecell:empty{display:none}
@@ -294,11 +336,20 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
     <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
     <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
     <symbol id="i-dice" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><circle cx="8.5" cy="8.5" r="1" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-square" viewBox="0 0 24 24"><rect x="4.5" y="4.5" width="15" height="15" rx="3"/></symbol>
+    <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></symbol>
+    <symbol id="i-note" viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M14.5 3v4.5H19M9 12h6M9 16h6"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
   </defs>
 </svg>
 
 <!-- ============ LOCK SCREEN ============ -->
 <section id="lock" aria-label="Unlock vault">
+  <button class="ib themecorner" data-themebtn="icon" type="button"></button>
   <div class="lock-inner">
     <div class="dial" id="dial" aria-hidden="true">
       <svg viewBox="0 0 200 200">
@@ -360,26 +411,35 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
     <div class="logo"><div class="logo-mark"></div><span>Nightvault</span></div>
     <button class="nav" data-tab="logins"><svg class="i"><use href="#i-key"/></svg>Logins<span class="count" id="cLogins"></span></button>
     <button class="nav" data-tab="cards"><svg class="i"><use href="#i-card"/></svg>Cards<span class="count" id="cCards"></span></button>
+    <button class="nav" data-tab="secure"><svg class="i"><use href="#i-note"/></svg>Notes<span class="count" id="cSecure"></span></button>
     <button class="nav" data-tab="calendar"><svg class="i"><use href="#i-cal"/></svg>Calendar</button>
     <button class="nav" data-tab="settings"><svg class="i"><use href="#i-gear"/></svg>Settings</button>
     <div class="rail-foot">
       <div class="timer">Auto-lock in <b id="timer">--:--</b></div>
+      <div class="timer" id="syncLine"></div>
+      <button class="btn" data-themebtn="label" type="button"></button>
       <button class="btn" id="lockBtn"><svg class="i"><use href="#i-lock"/></svg>Lock</button>
     </div>
   </nav>
 
   <main>
+    <div class="nudge" id="nudge" role="status" hidden>
+      <span id="nudgeText"></span>
+      <div class="btns"><button class="btn primary" id="nudgeBackup">Download backup</button><button class="btn" id="nudgeLater">Later</button></div>
+    </div>
     <!-- Logins -->
     <section class="view" id="v-logins">
       <div class="vhead">
-        <div style="flex:1 1 auto"><h2>Logins</h2><p>Import CSVs and each login is sorted into a corp by its email domain. Filter by corp, file or note, and sort by any column.</p></div>
+        <div style="flex:1 1 auto"><h2>Logins</h2><p>Import a CSV or a whole Excel workbook. Tabs become corps, or logins are sorted by email domain. Filter by corp, file or note, and sort by any column.</p></div>
+        <button class="btn" id="exportLogins"><svg class="i"><use href="#i-down"/></svg>Export</button>
         <button class="btn" id="addLogin"><svg class="i"><use href="#i-plus"/></svg>Add login</button>
-        <button class="btn primary" id="importBtn"><svg class="i"><use href="#i-up"/></svg>Import CSV</button>
-        <input type="file" id="csvInput" accept=".csv,text/csv" hidden>
+        <button class="btn primary" id="importBtn"><svg class="i"><use href="#i-up"/></svg>Import file</button>
+        <input type="file" id="csvInput" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
       </div>
       <div class="toolbar">
         <div class="search"><svg class="i"><use href="#i-search"/></svg><input class="inp" id="q" type="search" placeholder="Search name, site, username or notes" autocomplete="off"></div>
       </div>
+      <div class="chips views" id="views"></div>
       <div class="chips" id="chips"></div>
       <div class="filters" id="filters">
         <label>File <select class="inp" id="fFile"></select></label>
@@ -393,6 +453,15 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
         <span class="resultcount" id="resultCount"></span>
       </div>
       <div id="loginList"></div>
+      <div class="bulk" id="bulk" hidden>
+        <b id="bulkN"></b>
+        <button class="btn" data-bulk="all">Select all shown</button>
+        <button class="btn" data-bulk="move">Move to corp</button>
+        <button class="btn" data-bulk="fav">Favorite</button>
+        <button class="btn" data-bulk="unfav">Unfavorite</button>
+        <button class="btn danger" data-bulk="del">Delete</button>
+        <button class="btn" data-bulk="clear">Clear</button>
+      </div>
     </section>
 
     <!-- Cards -->
@@ -402,6 +471,16 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
         <button class="btn primary" id="addCardBtn"><svg class="i"><use href="#i-plus"/></svg>Add card</button>
       </div>
       <div class="cards" id="cardGrid"></div>
+    </section>
+
+    <!-- Secure notes -->
+    <section class="view" id="v-secure" hidden>
+      <div class="vhead">
+        <div style="flex:1 1 auto"><h2>Secure notes</h2><p>Encrypted notes for things that aren't logins. Each note stays hidden until you open it.</p></div>
+        <button class="btn primary" id="newSecure"><svg class="i"><use href="#i-plus"/></svg>New note</button>
+      </div>
+      <div class="toolbar"><div class="search"><svg class="i"><use href="#i-search"/></svg><input class="inp" id="sq" type="search" placeholder="Search notes" autocomplete="off"></div></div>
+      <div id="secureList"></div>
     </section>
 
     <!-- Calendar -->
@@ -437,11 +516,24 @@ dialog::backdrop{background:rgba(10,8,30,.55);backdrop-filter:blur(4px)}
       <div class="vhead"><div style="flex:1 1 auto"><h2>Settings</h2></div></div>
       <div class="settings">
         <div class="sblock">
+          <h3>Sync across devices</h3>
+          <p id="syncStatus">Checking sync…</p>
+          <button class="btn primary" id="syncToggle" disabled>Turn on sync</button>
+        </div>
+        <div class="sblock">
+          <h3>Appearance</h3>
+          <p>Night mode is easier on the eyes in the dark. Automatic follows your device setting.</p>
+          <select class="inp" id="themeSel" style="max-width:220px">
+            <option value="auto">Automatic</option><option value="dark">Night mode</option><option value="light">Day mode</option>
+          </select>
+        </div>
+        <div class="sblock">
           <h3>Auto-lock</h3>
           <p>The vault locks itself and wipes decrypted data from memory after this much inactivity.</p>
           <select class="inp" id="autolock" style="max-width:220px">
             <option value="1">1 minute</option><option value="5">5 minutes</option><option value="15">15 minutes</option><option value="30">30 minutes</option>
           </select>
+          <label class="ack" style="margin-top:14px"><input type="checkbox" id="lockOnHide">Lock as soon as I switch to another app or tab</label>
         </div>
         <div class="sblock" id="pwBlock">
           <h3>Update password</h3>
@@ -533,7 +625,7 @@ async function encryptJSON(key, obj){ const iv = rand(12); const ct = await cryp
 async function decryptJSON(key, iv, ct){ return JSON.parse(td.decode(await crypto.subtle.decrypt({name:'AES-GCM', iv:fromB64(iv)}, key, fromB64(ct)))); }
 async function setDek(dek){ S.dek = dek; S.key = await crypto.subtle.importKey('raw', dek, 'AES-GCM', false, ['encrypt','decrypt']); }
 const readVault = () => { try { return JSON.parse(store.get(VKEY) || 'null'); } catch(e){ return null; } };
-const metaOf = v => ({ v:2, pw:v.pw, rc:v.rc || null, rcTo:Array.isArray(v.rcTo) ? v.rcTo : DEFAULT_RC.slice(), rcAt:v.rcAt || 0 });
+const metaOf = v => ({ v:2, pw:v.pw, rc:v.rc || null, rcTo:Array.isArray(v.rcTo) ? v.rcTo : DEFAULT_RC.slice(), rcAt:v.rcAt || 0, rev:v.rev || 0, at:v.at || 0, sync:!!v.sync });
 const uid = () => toB64(rand(9)).replace(/[+/=]/g, c => ({'+':'a','/':'b','=':''}[c]));
 
 /* Crockford base32 for the recovery key: no I, L, O or U, so it's easy to read and type. */
@@ -549,16 +641,19 @@ function b32dec(str){
 const fmtRk = s => s.match(/.{1,4}/g).join('-');
 
 /* ---------- state ---------- */
-const emptyVault = () => ({ logins:[], files:[], cards:[], notes:{}, settings:{ autolock:5 } });
+const emptyVault = () => ({ logins:[], files:[], cards:[], notes:{}, secure:[], settings:{ autolock:5, lockOnHide:false } });
 const S = { key:null, dek:null, meta:null, user:'', vault:null, deadline:0, tab:'logins',
-  corp:'all', file:'all', note:'all', sort:'name', dir:1, group:true, q:'', shown:new Set(), cal:null, clipT:null };
+  view:'all', rows:[], corp:'all', file:'all', note:'all', sort:'name', dir:1, group:true, q:'', shown:new Set(), sel:new Set(), cal:null, clipT:null };
 
 let saving = Promise.resolve();
-function save(){
+function save(dirty = true){
   if(!S.key) return saving;
+  if(dirty && S.vault && !S.vault.settings.dirtySince) S.vault.settings.dirtySince = Date.now();
+  S.meta.rev = Math.max(S.meta.rev || 0, (SYNC.remote && SYNC.remote.rev) || 0) + 1; S.meta.at = Date.now();
   const key = S.key, snap = S.vault, meta = { ...S.meta };
-  saving = saving.then(async () => { const { iv, ct } = await encryptJSON(key, snap); store.set(VKEY, JSON.stringify({ ...meta, iv, ct })); })
+  saving = saving.then(async () => { const { iv, ct } = await encryptJSON(key, snap); store.set(VKEY, JSON.stringify({ ...meta, iv, ct })); if(meta.sync) schedulePush(); })
     .catch(() => toast("Couldn't save. Browser storage may be full or blocked.", true));
+  if(dirty) setTimeout(renderNudge, 0);
   return saving;
 }
 
@@ -590,10 +685,127 @@ function genPassword(len = 20){
 async function offerFile(filename, data, okMsg){
   let dl = null;
   try { dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch(e){ dl = null; }
-  if(dl){ try { await dl.save({ filename, data }); toast(okMsg); } catch(err){ if(err && err.code !== 'declined') toast("Couldn't save the file here.", true); } return; }
-  try { const url = URL.createObjectURL(new Blob([data], { type:'text/plain' })); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000); toast(okMsg); }
-  catch(e){ toast("This view doesn't allow downloads.", true); }
+  if(dl){ try { await dl.save({ filename, data }); toast(okMsg); return true; } catch(err){ if(err && err.code !== 'declined') toast(err && err.code === 'extension_not_enabled' ? "That file type can't be downloaded here. Try the other format." : "Couldn't save the file here.", true); return false; } }
+  try { const url = URL.createObjectURL(data instanceof Blob ? data : new Blob([data], { type:'text/plain' })); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000); toast(okMsg); return true; }
+  catch(e){ toast("This view doesn't allow downloads.", true); return false; }
 }
+
+/* ---------- theme (a display preference, kept outside the encrypted vault) ---------- */
+const THEME_KEY = 'nightvault.theme', darkMQ = matchMedia('(prefers-color-scheme: dark)');
+const curTheme = () => { const t = store.get(THEME_KEY); return t === 'light' || t === 'dark' ? t : 'auto'; };
+const isDark = () => { const t = curTheme(); return t === 'dark' || (t === 'auto' && darkMQ.matches); };
+function applyTheme(){
+  const t = curTheme(), d = isDark();
+  if(t === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', t);
+  $$('[data-themebtn]').forEach(b => { b.innerHTML = icon(d ? 'sun' : 'moon') + (b.dataset.themebtn === 'label' ? (d ? 'Day mode' : 'Night mode') : ''); b.setAttribute('aria-label', d ? 'Switch to day mode' : 'Switch to night mode'); });
+  $('#themeSel').value = t;
+}
+$$('[data-themebtn]').forEach(b => b.addEventListener('click', () => { store.set(THEME_KEY, isDark() ? 'light' : 'dark'); applyTheme(); }));
+$('#themeSel').addEventListener('change', e => { e.target.value === 'auto' ? store.del(THEME_KEY) : store.set(THEME_KEY, e.target.value); applyTheme(); });
+try { darkMQ.addEventListener('change', applyTheme); } catch(e){}
+applyTheme();
+
+/* ---------- password health ---------- */
+const COMMON = /^(password|passw0rd|qwerty|letmein|welcome|admin|iloveyou|abc123|123456|111111|monkey|dragon|football|baseball|sunshine|princess|changeme)/i;
+function pwBits(p){
+  if(!p) return 0; let pool = 0;
+  if(/[a-z]/.test(p)) pool += 26; if(/[A-Z]/.test(p)) pool += 26; if(/\d/.test(p)) pool += 10; if(/[^a-zA-Z0-9]/.test(p)) pool += 33;
+  let bits = p.length * Math.log2(pool || 1);
+  if(COMMON.test(p)) bits -= 30; if(/(.)\1{2,}/.test(p)) bits -= 10; if(/(0123|1234|2345|3456|4567|5678|6789|abcd|qwer|asdf)/i.test(p)) bits -= 10;
+  return bits;
+}
+const isWeak = p => !!p && (p.length < 10 || pwBits(p) < 50);
+const isOld = l => !!l.password && Date.now() - (l.pwChanged || l.added || Date.now()) > 365 * 86400000;
+function reuseMap(){ const m = new Map(); S.vault.logins.forEach(l => { if(l.password) m.set(l.password, (m.get(l.password) || 0) + 1); }); return m; }
+
+/* ---------- social accounts ---------- */
+const SOCIAL = [['Instagram',/instagram/i],['Facebook',/facebook|\bfb\b/i],['TikTok',/tik\s?tok/i],['X',/twitter|\bx\.com\b/i],['LinkedIn',/linkedin/i],['YouTube',/youtube/i],['Pinterest',/pinterest/i],['Snapchat',/snapchat/i],['Threads',/threads\.net|\bthreads\b/i],['Reddit',/reddit/i],['Discord',/discord/i]];
+function socialOf(l){ if(l.social === false) return ''; const hay = [l.name, l.url, l.notes].join(' '); for(const [n, r] of SOCIAL) if(r.test(hay)) return n; return l.social === true ? 'Social' : ''; }
+
+/* ---------- plaintext export (CSV / XLSX) ---------- */
+const CRC = (() => { const t = new Uint32Array(256); for(let n = 0; n < 256; n++){ let c = n; for(let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+const crc32 = b => { let c = 0xFFFFFFFF; for(const x of b) c = CRC[(c ^ x) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+function zipStore(files){
+  const parts = [], cd = []; let off = 0;
+  for(const f of files){
+    const name = te.encode(f.name), data = te.encode(f.data), crc = crc32(data);
+    const h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(12, 0x21, true);
+    h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, name.length, true);
+    parts.push(new Uint8Array(h.buffer), name, data);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(14, 0x21, true);
+    c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true); c.setUint16(28, name.length, true); c.setUint32(42, off, true);
+    cd.push(new Uint8Array(c.buffer), name); off += 30 + name.length + data.length;
+  }
+  const size = cd.reduce((s, a) => s + a.length, 0), e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, size, true); e.setUint32(16, off, true);
+  return new Blob([...parts, ...cd, new Uint8Array(e.buffer)]);
+}
+const xe = s => String(s ?? '').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const colName = i => { let s = ''; i++; while(i){ const m = (i - 1) % 26; s = String.fromCharCode(65 + m) + s; i = Math.floor((i - 1) / 26); } return s; };
+function buildXlsx(sheets){
+  const NS = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main', R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships', H = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  const files = [
+    { name:'[Content_Types].xml', data:`${H}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>${sheets.map((s,i) => `<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('')}</Types>` },
+    { name:'_rels/.rels', data:`${H}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="${R}/officeDocument" Target="xl/workbook.xml"/></Relationships>` },
+    { name:'xl/workbook.xml', data:`${H}<workbook xmlns="${NS}" xmlns:r="${R}"><sheets>${sheets.map((s,i) => `<sheet name="${xe(s.name)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('')}</sheets></workbook>` },
+    { name:'xl/_rels/workbook.xml.rels', data:`${H}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${sheets.map((s,i) => `<Relationship Id="rId${i+1}" Type="${R}/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('')}<Relationship Id="rId${sheets.length+1}" Type="${R}/styles" Target="styles.xml"/></Relationships>` },
+    { name:'xl/styles.xml', data:`${H}<styleSheet xmlns="${NS}"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs></styleSheet>` }
+  ];
+  sheets.forEach((s, i) => files.push({ name:`xl/worksheets/sheet${i+1}.xml`, data:`${H}<worksheet xmlns="${NS}"><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols><col min="1" max="${s.rows[0].length}" width="28" customWidth="1"/></cols><sheetData>${s.rows.map((r, ri) => `<row r="${ri+1}">${r.map((v, ci) => `<c r="${colName(ci)}${ri+1}" t="inlineStr"${ri === 0 ? ' s="1"' : ''}><is><t xml:space="preserve">${xe(v)}</t></is></c>`).join('')}</row>`).join('')}</sheetData></worksheet>` }));
+  return zipStore(files);
+}
+const EXPORT_HEAD = ['Corp','Name','URL','Username','Password','Note'];
+const exportRow = l => [l.corp, l.name, l.url, l.username, l.password, l.notes];
+const csvCell = v => { v = String(v ?? ''); return /[",\r\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };
+function sheetName(n, used){ let s = (String(n || 'Uncategorized').replace(/[\[\]:*?\/\\]/g, ' ').replace(/\s+/g, ' ').trim() || 'Uncategorized').slice(0, 31), b = s, i = 2; while(used.has(s.toLowerCase())){ const sfx = ` (${i++})`; s = b.slice(0, 31 - sfx.length) + sfx; } used.add(s.toLowerCase()); return s; }
+
+function exportDialog(){
+  const all = S.vault.logins, view = S.rows || [];
+  if(!all.length) return toast('There are no logins to export yet.', true);
+  openDialog(`<h3>Export logins</h3>
+    <p class="warn" style="margin:0">Exported files are not encrypted. Anyone who opens the file can read every password in it. Share it only over a secure channel and delete it when you're done.</p>
+    <label class="opt"><input type="radio" name="scope" value="view" ${view.length ? 'checked' : 'disabled'}><div>What you're viewing now<div class="sub">${view.length} login${view.length===1?'':'s'} with the current filters and search</div></div></label>
+    <label class="opt"><input type="radio" name="scope" value="all" ${view.length ? '' : 'checked'}><div>Everything<div class="sub">All ${all.length} logins</div></div></label>
+    <label class="f">Format<select class="inp" name="fmt"><option value="xlsx">Excel workbook, one tab per corp (.xlsx)</option><option value="csv">Single CSV file (.csv)</option></select></label>
+    <label class="f">Master password to confirm<input class="inp" type="password" name="pw" required autocomplete="current-password"></label>
+    <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Export</button></div>`,
+  async fd => {
+    try { await unwrap(await pwKek(S.user, String(fd.get('pw')), fromB64(S.meta.pw.salt), S.meta.pw.iter), S.meta.pw); }
+    catch(err){ toast('Master password is incorrect.', true); return false; }
+    const rows = (fd.get('scope') === 'all' ? all : view).slice().sort((a,b) => cmp(a.corp, b.corp) || cmp(a.name, b.name));
+    const stamp = todayKey(), corps = [...new Set(rows.map(l => l.corp))], base = corps.length === 1 ? corps[0].replace(/[^\w-]+/g, '-') : 'logins';
+    if(fd.get('fmt') === 'csv'){
+      const csv = '\uFEFF' + [EXPORT_HEAD, ...rows.map(exportRow)].map(r => r.map(csvCell).join(',')).join('\r\n');
+      offerFile(`nightvault-${base}-${stamp}.csv`, csv, `Exported ${rows.length} logins. Delete the file when you're done with it.`);
+    } else {
+      const used = new Set(), groups = {}; rows.forEach(l => (groups[l.corp] ||= []).push(l));
+      const sheets = Object.keys(groups).sort(cmp).map(c => ({ name:sheetName(c, used), rows:[EXPORT_HEAD, ...groups[c].map(exportRow)] }));
+      offerFile(`nightvault-${base}-${stamp}.xlsx`, buildXlsx(sheets), `Exported ${rows.length} logins. Delete the file when you're done with it.`);
+    }
+  });
+}
+
+/* ---------- backup reminder ---------- */
+function renderNudge(){
+  const st = S.vault && S.vault.settings, el = $('#nudge');
+  const has = S.vault && (S.vault.logins.length || S.vault.cards.length || Object.keys(S.vault.notes).length);
+  if(!st || !has || !st.dirtySince || Date.now() < (st.snoozeUntil || 0)){ el.hidden = true; return; }
+  $('#nudgeText').textContent = st.lastBackup
+    ? `You've made changes since your last backup on ${new Date(st.lastBackup).toLocaleDateString(undefined, { month:'long', day:'numeric' })}. Back up so they aren't lost if this browser's data is cleared.`
+    : "This vault hasn't been backed up yet. If this browser's data is cleared, everything in it is lost.";
+  el.hidden = false;
+}
+async function backupNow(){
+  await save(false); const data = store.get(VKEY); if(!data) return;
+  if(await offerFile(`nightvault-backup-${todayKey()}.json`, data, 'Backup saved. Keep it somewhere safe.')){
+    S.vault.settings.lastBackup = Date.now(); S.vault.settings.dirtySince = 0; await save(false); renderNudge();
+  }
+}
+$('#nudgeBackup').addEventListener('click', backupNow);
+$('#nudgeLater').addEventListener('click', async () => { S.vault.settings.snoozeUntil = Date.now() + 86400000; await save(false); renderNudge(); toast("We'll remind you again tomorrow."); });
+$('#exportLogins').addEventListener('click', exportDialog);
 
 /* ---------- corps ---------- */
 const FREE = new Set(['gmail','googlemail','yahoo','ymail','rocketmail','outlook','hotmail','live','msn','icloud','me','mac','aol','proton','protonmail','pm','gmx','mail','yandex','zoho','hey','fastmail','tutanota','shaw','telus','rogers','sympatico','bell']);
@@ -607,7 +819,7 @@ function corpOf(l){
 }
 function normalize(data){
   const V = Object.assign(emptyVault(), data);
-  V.settings = Object.assign({ autolock:5 }, data.settings || {});
+  V.settings = Object.assign({ autolock:5, lockOnHide:false }, data.settings || {}); if(!Array.isArray(V.secure)) V.secure = [];
   for(const l of V.logins){
     if(!l.corp) l.corp = corpOf(l);
     if(!l.added) l.added = (V.files.find(f => f.id === l.fileId) || {}).importedAt || 0;
@@ -665,10 +877,13 @@ $('#setupForm').addEventListener('submit', async e => {
   e.preventDefault();
   const f = e.target, user = f.user.value.trim(), msg = $('#setupMsg');
   const bad = checkNewPw(user, f.pass.value, f.pass2.value); if(bad) return msg.textContent = bad;
-  const btn = $('#setupBtn'); btn.disabled = true; btn.textContent = 'Generating key…'; busyDial(true);
+  const btn = $('#setupBtn'); btn.disabled = true; btn.textContent = 'Checking for a synced vault…'; busyDial(true);
+  await syncChecked;
+  if(readVault()){ btn.disabled = false; btn.textContent = 'Create vault'; busyDial(false); return showLock('unlock'), $('#lockSub').textContent = 'Found your synced vault. Unlock it with your username and master password.'; }
+  btn.textContent = 'Generating key…';
   try {
     const dek = rand(32);
-    S.meta = { v:2, pw: await wrapWithPw(user, f.pass.value, dek), rc:null, rcTo:DEFAULT_RC.slice(), rcAt:0 };
+    S.meta = { v:2, pw: await wrapWithPw(user, f.pass.value, dek), rc:null, rcTo:DEFAULT_RC.slice(), rcAt:0, rev:0, at:0, sync:false };
     await setDek(dek); S.user = user; S.vault = emptyVault();
     await save(); openApp();
   } catch(err){ msg.textContent = 'This browser could not create the vault (Web Crypto unavailable).'; }
@@ -689,10 +904,10 @@ $('#unlockForm').addEventListener('submit', async e => {
       // Older single-key vault: open it, then move it to the new layout so recovery works.
       const old = await pwKek(user, pass, fromB64(v.salt), v.iter);
       const data = await decryptJSON(old, v.iv, v.ct), dek = rand(32);
-      S.meta = { v:2, pw: await wrapWithPw(user, pass, dek), rc:null, rcTo:DEFAULT_RC.slice(), rcAt:0 };
+      S.meta = { v:2, pw: await wrapWithPw(user, pass, dek), rc:null, rcTo:DEFAULT_RC.slice(), rcAt:0, rev:0, at:0, sync:false };
       await setDek(dek); S.vault = normalize(data);
     }
-    store.del(FKEY); S.user = user; await save(); openApp();
+    store.del(FKEY); S.user = user; if(v.v !== 2) await save(false); openApp();
   } catch(err){
     S.key = null; S.dek = null; f.pass.value = ''; failAnim();
     const w2 = addFail(); msg.textContent = w2 ? `Incorrect. Locked for ${Math.ceil(w2/1000)} seconds.` : 'Username or password is incorrect.';
@@ -725,19 +940,19 @@ function openApp(){
     $$('#lock form').forEach(f => f.reset());
     $('#lock').hidden = true; $('#app').hidden = false;
     const n = new Date(); S.cal = { y:n.getFullYear(), m:n.getMonth(), sel:todayKey() };
-    Object.assign(S, { corp:'all', file:'all', note:'all', q:'' }); $('#q').value = ''; S.shown.clear();
-    $('#autolock').value = String(S.vault.settings.autolock);
-    bump(); setTab('logins');
+    Object.assign(S, { view:'all', corp:'all', file:'all', note:'all', q:'' }); $('#q').value = ''; S.shown.clear();
+    $('#autolock').value = String(S.vault.settings.autolock); $('#lockOnHide').checked = !!S.vault.settings.lockOnHide; $('#sq').value = '';
+    bump(); setTab('logins'); renderNudge();
     if(!S.meta.rc) setTimeout(() => newRecovery(true), 300);
   }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 450);
 }
 
 function lock(reason){
   if(S.dek) S.dek.fill(0);
-  Object.assign(S, { key:null, dek:null, meta:null, vault:null, user:'' }); S.shown.clear();
+  Object.assign(S, { key:null, dek:null, meta:null, vault:null, user:'', deadline:0 }); S.shown.clear(); S.sel.clear(); $('#bulk').hidden = true;
   try { dlg.open && dlg.close(); } catch(e){}
-  ['#loginList','#chips','#cardGrid','#calDays','#noteList','#upList'].forEach(s => $(s).replaceChildren());
-  $('#pwForm').reset(); $('#rcForm').reset();
+  ['#loginList','#chips','#views','#cardGrid','#calDays','#noteList','#upList','#secureList'].forEach(s => $(s).replaceChildren());
+  $('#pwForm').reset(); $('#rcForm').reset(); $('#nudge').hidden = true;
   showLock(); if(reason) toast(reason);
 }
 $('#lockBtn').addEventListener('click', () => lock());
@@ -746,14 +961,14 @@ $('#lockBtn').addEventListener('click', () => lock());
 function bump(){ if(S.key && S.vault) S.deadline = Date.now() + S.vault.settings.autolock * 60000; }
 ['pointerdown','keydown','pointermove','wheel','touchstart','scroll'].forEach(ev => addEventListener(ev, bump, { passive:true, capture:true }));
 setInterval(() => {
-  if(!S.key || !S.vault) return;
+  if(!S.key || !S.vault || $('#app').hidden || !S.deadline) return;
   const left = S.deadline - Date.now(); if(left <= 0) return lock('Locked after inactivity.');
   const s = Math.ceil(left/1000); $('#timer').textContent = `${pad(Math.floor(s/60))}:${pad(s%60)}`;
 }, 1000);
 
 /* ---------- tabs ---------- */
 function setTab(t){
-  S.tab = t; S.shown.clear();
+  S.tab = t; S.shown.clear(); S.sel.clear(); $('#bulk').hidden = true;
   $$('[data-tab]').forEach(b => b.setAttribute('aria-current', b.dataset.tab === t ? 'page' : 'false'));
   $$('.view').forEach(v => v.hidden = v.id !== 'v-' + t);
   $('main').scrollTop = 0; render();
@@ -762,12 +977,13 @@ $$('[data-tab]').forEach(b => b.addEventListener('click', () => setTab(b.dataset
 function render(){
   if(!S.vault) return;
   $('#cLogins').textContent = S.vault.logins.length || ''; $('#cCards').textContent = S.vault.cards.length || '';
-  ({ logins:renderLogins, cards:renderCards, calendar:renderCal, settings:renderSettings })[S.tab]();
+  $('#cSecure').textContent = S.vault.secure.length || '';
+  ({ logins:renderLogins, cards:renderCards, secure:renderSecure, calendar:renderCal, settings:renderSettings })[S.tab]();
 }
 
 /* ---------- dialog ---------- */
 const dlg = $('#dlg'), dform = $('#dlgForm'); let dSubmit = null;
-function openDialog(html, onSubmit){ dform.onclick = null; dform.innerHTML = html; dSubmit = onSubmit; if(!dlg.open) dlg.showModal(); const first = dform.querySelector('input:not([type=radio]):not([type=checkbox]),textarea,select'); first && first.focus(); }
+function openDialog(html, onSubmit){ dform.onclick = null; dform.oninput = null; dform.innerHTML = html; dSubmit = onSubmit; if(!dlg.open) dlg.showModal(); const first = dform.querySelector('input:not([type=radio]):not([type=checkbox]),textarea,select'); first && first.focus(); }
 dform.addEventListener('submit', async e => {
   const btn = e.submitter; if(btn && btn.value === 'cancel') return;
   e.preventDefault();
@@ -842,49 +1058,113 @@ const COLS = {
 function mapHeaders(h){ const n = h.map(x => x.trim().toLowerCase()); const m = {}; for(const k in COLS){ const i = n.findIndex(x => COLS[k].includes(x)); if(i > -1) m[k] = i; } return m; }
 const clean = s => String(s || '').replace(/[\u0000-\u001F\u007F]/g, ' ').replace(/\s+/g, ' ').trim();
 
+/* Minimal, dependency-free .xlsx reader: unzips with the browser's built-in
+   DecompressionStream and reads every tab. No third-party code touches your data. */
+async function unzip(buf){
+  const dv = new DataView(buf), u8 = new Uint8Array(buf); let e = -1;
+  for(let i = u8.length - 22; i >= Math.max(0, u8.length - 65557); i--){ if(dv.getUint32(i, true) === 0x06054b50){ e = i; break; } }
+  if(e < 0) throw new Error('not a zip');
+  const n = dv.getUint16(e + 10, true); let p = dv.getUint32(e + 16, true); const files = {};
+  for(let k = 0; k < n; k++){
+    if(dv.getUint32(p, true) !== 0x02014b50) throw new Error('bad directory');
+    const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true), nlen = dv.getUint16(p + 28, true), xlen = dv.getUint16(p + 30, true), clen = dv.getUint16(p + 32, true), off = dv.getUint32(p + 42, true);
+    files[td.decode(u8.subarray(p + 46, p + 46 + nlen))] = { method, csize, off }; p += 46 + nlen + xlen + clen;
+  }
+  return async name => {
+    const f = files[name] || files[Object.keys(files).find(k => k.toLowerCase() === name.toLowerCase())]; if(!f) return null;
+    const start = f.off + 30 + dv.getUint16(f.off + 26, true) + dv.getUint16(f.off + 28, true), data = u8.subarray(start, start + f.csize);
+    if(f.method === 0) return td.decode(data);
+    if(f.method !== 8) throw new Error('unsupported compression');
+    return new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
+  };
+}
+const colIdx = ref => { let n = 0; for(const ch of String(ref).replace(/\d+/g, '').toUpperCase()) n = n * 26 + ch.charCodeAt(0) - 64; return Math.max(0, n - 1); };
+async function readXlsx(buf){
+  const get = await unzip(buf), X = s => new DOMParser().parseFromString(s, 'application/xml'), tags = (d, t) => [...d.getElementsByTagNameNS('*', t)];
+  const wbx = await get('xl/workbook.xml'); if(!wbx) throw new Error('no workbook');
+  const rels = {}; const rx = await get('xl/_rels/workbook.xml.rels');
+  if(rx) tags(X(rx), 'Relationship').forEach(r => rels[r.getAttribute('Id')] = r.getAttribute('Target'));
+  const ssx = await get('xl/sharedStrings.xml'); const ss = ssx ? tags(X(ssx), 'si').map(si => tags(si, 't').map(t => t.textContent).join('')) : [];
+  const out = [];
+  for(const sh of tags(X(wbx), 'sheet')){
+    if(sh.getAttribute('state') === 'veryHidden') continue;
+    const rid = sh.getAttribute('r:id') || [...sh.attributes].find(a => a.localName === 'id')?.value;
+    let t = rels[rid]; if(!t) continue;
+    t = t.replace(/^\//, ''); const path = t.startsWith('xl/') ? t : 'xl/' + t.replace(/^\.\.\//, '');
+    const sx = await get(path); if(!sx) continue;
+    const rows = tags(X(sx), 'row').map(row => { const arr = [];
+      tags(row, 'c').forEach((c, i) => { const ty = c.getAttribute('t'), v = tags(c, 'v')[0], col = c.getAttribute('r') ? colIdx(c.getAttribute('r')) : i;
+        arr[col] = ty === 's' ? (ss[+(v && v.textContent)] ?? '') : ty === 'inlineStr' ? tags(c, 't').map(x => x.textContent).join('') : (v ? v.textContent : ''); });
+      return Array.from(arr, x => x ?? ''); });
+    out.push({ name: sh.getAttribute('name') || '', rows });
+  }
+  return out;
+}
+
 $('#csvInput').addEventListener('change', async e => {
   const file = e.target.files[0]; e.target.value = ''; if(!file) return;
-  if(file.size > 10 * 1024 * 1024) return toast('That file is over 10 MB. Split it and import the parts.', true);
-  let rows; try { rows = parseCSV(await file.text()); } catch(err){ return toast("Couldn't read that file as text.", true); }
-  if(rows.length < 2) return toast('The CSV has no data rows under its header.', true);
-  const m = mapHeaders(rows[0]);
-  if(m.password === undefined) return toast('No password column found. The first row needs a header named "password".', true);
-  const V = S.vault, seen = new Set(V.logins.map(l => [l.username, l.url, l.password].join('\u0001')));
-  const recs = []; let dup = 0;
-  for(const r of rows.slice(1)){
-    const g = k => m[k] !== undefined ? clean(r[m[k]]) : '';
-    const rec = { name:g('name'), url:g('url'), username:g('username'), password:String(r[m.password] || '').replace(/^[\r\n]+|[\r\n]+$/g, ''), notes:g('notes'), corp:g('corp') };
-    if(!rec.password && !rec.username) continue;
-    if(!rec.name) rec.name = rec.username || hostOf(rec.url) || 'Untitled';
-    const sig = [rec.username, rec.url, rec.password].join('\u0001'); if(seen.has(sig)){ dup++; continue; } seen.add(sig);
-    rec.detected = rec.corp || corpOf(rec); recs.push(rec);
+  if(file.size > 15 * 1024 * 1024) return toast('That file is over 15 MB. Split it and import the parts.', true);
+  let sheets, isBook = false;
+  if(/\.xlsx$/i.test(file.name)){
+    if(typeof DecompressionStream === 'undefined') return toast('This browser is too old to read Excel files. Update it, or export each tab as CSV.', true);
+    try { sheets = await readXlsx(await file.arrayBuffer()); isBook = true; } catch(err){ return toast("Couldn't read that Excel file. Open it and save again as .xlsx, then retry.", true); }
+  } else if(/\.(xls|numbers|ods)$/i.test(file.name)){
+    return toast('Save the file as .xlsx (Excel Workbook) first, then import that.', true);
+  } else {
+    try { sheets = [{ name:'', rows: parseCSV(await file.text()) }]; } catch(err){ return toast("Couldn't read that file as text.", true); }
   }
-  if(!recs.length) return toast(dup ? `All ${dup} rows were already in the vault.` : 'No usable rows found in that CSV.', true);
-  importDialog(file.name, recs, dup);
+  const V = S.vault, seen = new Set(V.logins.map(l => [l.username, l.url, l.password].join('\u0001')));
+  const recs = [], skipped = []; let dup = 0;
+  for(const sh of sheets){
+    const rows = sh.rows.filter(r => r.some(x => String(x).trim() !== ''));
+    const hi = rows.slice(0, 10).findIndex(r => mapHeaders(r).password !== undefined);
+    if(hi < 0){ if(rows.length && sh.name) skipped.push(sh.name); continue; }
+    const m = mapHeaders(rows[hi]);
+    for(const r of rows.slice(hi + 1)){
+      const g = k => m[k] !== undefined ? clean(r[m[k]]) : '';
+      const rec = { name:g('name'), url:g('url'), username:g('username'), password:String(r[m.password] ?? '').replace(/^[\r\n]+|[\r\n]+$/g, ''), notes:g('notes'), corp:g('corp'), tab:clean(sh.name) };
+      if(!rec.password && !rec.username) continue;
+      if(!rec.name) rec.name = rec.username || hostOf(rec.url) || 'Untitled';
+      const sig = [rec.username, rec.url, rec.password].join('\u0001'); if(seen.has(sig)){ dup++; continue; } seen.add(sig);
+      rec.detected = corpOf(rec); recs.push(rec);
+    }
+  }
+  if(!recs.length){
+    if(dup) return toast(`All ${dup} rows were already in the vault.`, true);
+    return toast(isBook ? 'No tab has a header row with a "password" column.' : 'No password column found. The first row needs a header named "password".', true);
+  }
+  importDialog(file.name, recs, dup, skipped, isBook);
 });
 
 function corpList(){ return [...new Set(S.vault.logins.map(l => l.corp))].sort(cmp); }
-function importDialog(fname, recs, dup){
-  const tally = {}; recs.forEach(r => tally[r.detected] = (tally[r.detected] || 0) + 1);
-  const preview = Object.entries(tally).sort((a,b) => b[1]-a[1]).map(([c,n]) => `${esc(c)} (${n})`).join(', ');
-  const guess = clean(fname.replace(/\.csv$/i,'').split(/[-_ ]+/).filter(w => !/^(active|emails?|logins?|passwords?|export|accounts?|list|\d+)$/i.test(w)).join(' '));
+function importDialog(fname, recs, dup, skipped, isBook){
+  const tally = key => { const t = {}; recs.forEach(r => { const k = key(r); t[k] = (t[k] || 0) + 1; }); return Object.entries(t).sort((a,b) => b[1]-a[1]).map(([c,n]) => `${esc(c)} (${n})`).join(', '); };
+  const tabs = [...new Set(recs.map(r => r.tab))];
+  const useTabs = isBook && !tabs.every(t => /^sheet\s*\d*$/i.test(t));
+  const guess = clean(fname.replace(/\.(csv|xlsx)$/i,'').split(/[-_ ]+/).filter(w => !/^(active|emails?|logins?|passwords?|export|accounts?|list|\d+)$/i.test(w)).join(' '));
+  const n = recs.length, s = n > 1 ? 's' : '';
   openDialog(`<h3>Import ${esc(fname)}</h3>
-    <p class="muted" style="margin:0">${recs.length} login${recs.length>1?'s':''} ready${dup ? `, ${dup} already in your vault will be skipped` : ''}. How should they be categorized?</p>
-    <label class="opt"><input type="radio" name="mode" value="detect" checked><div>Sort into corps automatically<div class="sub">From each email's domain: ${preview}</div></div></label>
+    <p class="muted" style="margin:0">${n} login${s} ready${isBook ? ` from ${tabs.length} tab${tabs.length>1?'s':''}` : ''}${dup ? `, ${dup} already in your vault will be skipped` : ''}.${skipped.length ? ` Skipped tab${skipped.length>1?'s':''} with no password column: ${skipped.map(esc).join(', ')}.` : ''} How should they be categorized?</p>
+    ${isBook ? `<label class="opt"><input type="radio" name="mode" value="tab"${useTabs ? ' checked' : ''}><div>Use each tab name as the corp<div class="sub">${tally(r => r.corp || r.tab || 'Uncategorized')}</div></div></label>` : ''}
+    <label class="opt"><input type="radio" name="mode" value="detect"${useTabs ? '' : ' checked'}><div>Sort into corps by email domain<div class="sub">${tally(r => r.corp || r.detected)}</div></div></label>
     <label class="opt"><input type="radio" name="mode" value="one"><div style="flex:1">Put them all under one corp
       <input class="inp" name="corp" list="corpDL" value="${esc(guess)}" placeholder="Corp name" style="margin-top:8px"></div></label>
     <datalist id="corpDL">${corpList().map(c => `<option value="${esc(c)}">`).join('')}</datalist>
-    <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Import ${recs.length} login${recs.length>1?'s':''}</button></div>`,
+    <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Import ${n} login${s}</button></div>`,
   async fd => {
-    const one = fd.get('mode') === 'one', corp = clean(fd.get('corp'));
-    if(one && !corp){ toast('Type a corp name, or choose automatic sorting.', true); return false; }
+    const mode = fd.get('mode'), one = clean(fd.get('corp'));
+    if(mode === 'one' && !one){ toast('Type a corp name, or choose another option.', true); return false; }
     const V = S.vault, fileId = uid(), now = Date.now();
-    for(const r of recs){ const { detected, ...rest } = r; V.logins.push({ ...rest, id:uid(), fileId, corp: one ? corp : detected, added:now }); }
-    V.files.push({ id:fileId, name:fname, importedAt:now, count:recs.length });
+    for(const r of recs){
+      const { detected, tab, ...rest } = r;
+      const corp = mode === 'one' ? one : mode === 'tab' ? (r.corp || tab || detected) : (r.corp || detected);
+      V.logins.push({ ...rest, id:uid(), fileId, corp, added:now });
+    }
+    V.files.push({ id:fileId, name:fname, importedAt:now, count:n });
     await save(); Object.assign(S, { corp:'all', file:fileId, note:'all' }); render();
-    toast(`Imported ${recs.length} from ${fname}. Delete the original CSV now — it isn't encrypted.`);
+    toast(`Imported ${n} from ${fname}. Delete the original file now — it isn't encrypted.`);
   });
-  dform.addEventListener('input', e => { if(e.target.name === 'corp') dform.querySelector('[value=one]').checked = true; });
+  dform.oninput = e => { if(e.target.name === 'corp'){ const r = dform.querySelector('[value=one]'); if(r) r.checked = true; } };
 }
 
 const fileName = id => id === 'manual' ? 'Added by hand' : ((S.vault.files.find(f => f.id === id) || {}).name || '');
@@ -892,23 +1172,32 @@ const SORTV = { name:l => l.name, corp:l => l.corp, username:l => l.username, no
 const SORTLBL = { name:['A–Z','Z–A'], corp:['A–Z','Z–A'], username:['A–Z','Z–A'], notes:['A–Z','Z–A'], file:['A–Z','Z–A'], added:['Oldest','Newest'] };
 
 function renderLogins(){
-  const V = S.vault, L = V.logins;
+  const V = S.vault, L = V.logins, reuse = reuseMap();
+  const risk = l => isWeak(l.password) || reuse.get(l.password) > 1 || isOld(l);
+  const VIEWS = { all:() => true, fav:l => !!l.fav, social:l => !!socialOf(l), risk };
   if(S.corp !== 'all' && !L.some(l => l.corp === S.corp)) S.corp = 'all';
   if(S.file !== 'all' && !L.some(l => l.fileId === S.file)) S.file = 'all';
-  if(S.note !== 'all' && !L.some(l => l.notes === S.note)) S.note = 'all';
+  if(S.note !== 'all' && !L.some(l => (l.notes || '') === S.note)) S.note = 'all';
+
+  // view chips
+  const vc = k => L.filter(VIEWS[k]).length, riskN = vc('risk');
+  $('#views').innerHTML = [['all','All logins'],['fav','Favorites'],['social','Social media'],['risk','At risk']].map(([k, t]) => { const n = k === 'risk' ? riskN : vc(k);
+    return `<button class="chip only${k === 'risk' && n ? ' alert' : ''}" data-view="${k}" aria-pressed="${S.view===k}" title="${k === 'risk' ? 'Weak, reused, or not changed in over a year' : ''}">${k === 'fav' ? icon('star') : ''}${t} <span class="n">${n}</span></button>`; }).join('');
+  const inView = L.filter(VIEWS[S.view]);
 
   // corp chips
-  const counts = {}; L.forEach(l => counts[l.corp] = (counts[l.corp] || 0) + 1);
+  const counts = {}; inView.forEach(l => counts[l.corp] = (counts[l.corp] || 0) + 1);
+  if(S.corp !== 'all' && !counts[S.corp]) S.corp = 'all';
   const corps = Object.keys(counts).sort((a,b) => counts[b] - counts[a] || cmp(a,b));
-  $('#chips').innerHTML = `<button class="chip only" data-corp="all" aria-pressed="${S.corp==='all'}">All corps <span class="n">${L.length}</span></button>` +
+  $('#chips').innerHTML = `<button class="chip only" data-corp="all" aria-pressed="${S.corp==='all'}">All corps <span class="n">${inView.length}</span></button>` +
     corps.map(c => `<span class="chip" aria-pressed="${S.corp===c}"><button style="all:unset;cursor:pointer;display:inline-flex;gap:8px;align-items:center" data-corp="${esc(c)}">${esc(c)} <span class="n">${counts[c]}</span></button><button class="x" data-rename="${esc(c)}" aria-label="Rename ${esc(c)}" title="Rename corp">${icon('edit')}</button></span>`).join('');
-  $('#chips').hidden = $('#filters').hidden = !L.length;
+  $('#views').hidden = $('#chips').hidden = $('#filters').hidden = !L.length;
 
   // filter selects
-  const inCorp = L.filter(l => S.corp === 'all' || l.corp === S.corp);
+  const inCorp = inView.filter(l => S.corp === 'all' || l.corp === S.corp);
   const fileIds = [...new Set(inCorp.map(l => l.fileId))];
   $('#fFile').innerHTML = `<option value="all">All files</option>` + V.files.filter(f => fileIds.includes(f.id)).map(f => `<option value="${f.id}">${esc(f.name)}</option>`).join('') + (fileIds.includes('manual') ? `<option value="manual">Added by hand</option>` : '');
-  $('#fFile').value = fileIds.includes(S.file) ? S.file : 'all';
+  $('#fFile').value = fileIds.includes(S.file) ? S.file : 'all'; if($('#fFile').value !== S.file) S.file = 'all';
   $('#fFileDel').hidden = !V.files.some(f => f.id === S.file);
   const notes = [...new Set(inCorp.map(l => l.notes).filter(n => n && n.length <= 40))].sort(cmp);
   $('#fNote').innerHTML = `<option value="all">Any note</option>` + notes.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('') + (inCorp.some(l => !l.notes) ? `<option value="">No note</option>` : '');
@@ -920,30 +1209,39 @@ function renderLogins(){
     (!q || [l.name,l.url,l.username,l.notes,l.corp].join(' ').toLowerCase().includes(q)));
   const get = SORTV[S.sort];
   rows.sort((a,b) => { const x = get(a), y = get(b); const c = typeof x === 'number' ? x - y : cmp(x, y); return (c || cmp(a.name, b.name)) * S.dir; });
+  S.rows = rows; renderBulk();
   $('#resultCount').textContent = L.length ? `${rows.length} of ${L.length} shown` : '';
 
   const list = $('#loginList');
-  if(!L.length){ list.innerHTML = `<div class="empty"><h3>No logins yet</h3><p>Import a CSV with a header row. It needs a password column, plus email or username, and optionally a note or website.</p><button class="btn primary" data-act="import">${icon('up')}Import CSV</button></div>`; return; }
-  if(!rows.length){ list.innerHTML = `<div class="empty"><h3>Nothing matches</h3><p>Clear the search or switch filters back to “All”.</p></div>`; return; }
+  if(!L.length){ list.innerHTML = `<div class="empty"><h3>No logins yet</h3><p>Import a CSV or an Excel workbook (.xlsx). In a workbook, each tab can become its own corp. Each sheet needs a header row with a password column, plus email or username.</p><button class="btn primary" data-act="import">${icon('up')}Import file</button></div>`; return; }
+  if(!rows.length){ list.innerHTML = S.view === 'risk' && !riskN
+    ? `<div class="empty"><h3>No passwords at risk</h3><p>None of your passwords are weak, reused, or more than a year old.</p></div>`
+    : `<div class="empty"><h3>Nothing matches</h3><p>Clear the search or switch filters back to “All”.</p></div>`; return; }
 
   const arrow = k => S.sort === k ? `<span class="arw">${S.dir > 0 ? '▲' : '▼'}</span>` : '<span class="arw"></span>';
   const th = (k, t) => `<button data-sortby="${k}"${S.sort===k ? ` aria-sort="${S.dir>0?'ascending':'descending'}"` : ''}>${t}${arrow(k)}</button>`;
-  const row = l => { const href = safeHref(l.url), shown = S.shown.has(l.id);
+  const row = l => { const href = safeHref(l.url), shown = S.shown.has(l.id), rc = reuse.get(l.password) || 0, weak = isWeak(l.password), soc = socialOf(l);
+    const old = isOld(l), sel = S.sel.has(l.id);
+    const hw = weak ? `<span class="hw" title="Short or easy to guess">Weak</span>` : rc > 1 ? `<span class="hw" title="Same password on ${rc} accounts">Reused ×${rc}</span>` : old ? `<span class="hw old" title="Not changed in over a year">1 yr+</span>` : '';
     return `<li class="lrow" data-id="${l.id}">
-      <div class="badge" aria-hidden="true">${esc((l.name[0] || '?').toUpperCase())}</div>
-      <div class="who"><div class="nm" title="${esc(l.name)}">${esc(l.name)}</div>${href ? `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(hostOf(l.url))}</a>` : `<span class="src">${esc(fileName(l.fileId))}</span>`}</div>
+      <button class="badge" data-act="sel" aria-pressed="${sel}" aria-label="${sel ? 'Deselect' : 'Select'} ${esc(l.name)}">${sel ? icon('check') : esc((l.name[0] || '?').toUpperCase())}</button>
+      <div class="who"><div class="nm" title="${esc(l.name)}">${esc(l.name)}</div>${href ? `<a href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(hostOf(l.url))}</a>` : `<span class="src">${esc(soc && soc !== 'Social' ? soc : fileName(l.fileId))}</span>`}${l.totp ? `<button class="otp mono" data-act="otp" data-otp="${l.id}" title="Copy 2FA code">··· ···</button>` : ''}</div>
       <div class="corpcell"><span class="pill" title="${esc(l.corp)}">${esc(l.corp)}</span></div>
       <div class="fld"><span class="lbl">Username</span><span class="v" title="${esc(l.username)}">${esc(l.username) || '<span class="muted">—</span>'}</span>${l.username ? `<button class="ib" data-act="cu" aria-label="Copy username">${icon('copy')}</button>` : ''}</div>
-      <div class="fld"><span class="lbl">Password</span><span class="v mono">${shown ? esc(l.password) : '••••••••••'}</span><button class="ib" data-act="rv" aria-label="${shown?'Hide':'Show'} password">${icon(shown?'eyeoff':'eye')}</button><button class="ib" data-act="cp" aria-label="Copy password">${icon('copy')}</button></div>
+      <div class="fld"><span class="lbl">Password</span><span class="v mono">${shown ? esc(l.password) : '••••••••••'}</span>${hw}<button class="ib" data-act="rv" aria-label="${shown?'Hide':'Show'} password">${icon(shown?'eyeoff':'eye')}</button><button class="ib" data-act="cp" aria-label="Copy password">${icon('copy')}</button></div>
       <div class="notecell" title="${esc(l.notes)}">${esc(l.notes)}</div>
-      <div class="acts"><button class="ib" data-act="ed" aria-label="Edit">${icon('edit')}</button><button class="ib del" data-act="dl" aria-label="Delete">${icon('trash')}</button></div>
+      <div class="acts">${href ? `<button class="ib" data-act="go" aria-label="Copy password and open site" title="Copy password and open site">${icon('ext')}</button>` : ''}<button class="ib star" data-act="fav" aria-pressed="${!!l.fav}" aria-label="${l.fav ? 'Remove from favorites' : 'Add to favorites'}">${icon('star')}</button><button class="ib" data-act="ed" aria-label="Edit">${icon('edit')}</button><button class="ib del" data-act="dl" aria-label="Delete">${icon('trash')}</button></div>
     </li>`; };
+  const head = (t, n, cls = '') => `<li class="ghead${cls}">${t} <span class="n">${n}</span></li>`;
   let body = '';
+  const favs = S.view === 'fav' ? [] : rows.filter(l => l.fav), rest = S.view === 'fav' ? rows : rows.filter(l => !l.fav);
   if(S.group && S.corp === 'all' && S.sort !== 'corp'){
-    const groups = {}; rows.forEach(l => (groups[l.corp] ||= []).push(l));
-    Object.keys(groups).sort(cmp).forEach(c => { body += `<li class="ghead">${esc(c)} <span class="n">${groups[c].length}</span></li>` + groups[c].map(row).join(''); });
-  } else body = rows.map(row).join('');
-  list.innerHTML = `<ul class="list"><li class="lhead"><span></span>${th('name','Account')}${th('corp','Corp')}${th('username','Username')}<span>Password</span>${th('notes','Note')}<span></span></li>${body}</ul>`;
+    if(favs.length) body += head(`${icon('star')}Favorites`, favs.length, ' fav') + favs.map(row).join('');
+    const groups = {}; rest.forEach(l => (groups[l.corp] ||= []).push(l));
+    Object.keys(groups).sort(cmp).forEach(c => { body += head(esc(c), groups[c].length) + groups[c].map(row).join(''); });
+  } else body = [...favs, ...rest].map(row).join('');
+  renderBulk();
+  list.innerHTML = `<ul class="list"><li class="lhead"><button class="selall" data-act="selall" aria-label="Select all shown" title="Select all shown">${icon(rows.every(l => S.sel.has(l.id)) ? 'check' : 'square')}</button>${th('name','Account')}${th('corp','Corp')}${th('username','Username')}<span>Password</span>${th('notes','Note')}<span></span></li>${body}</ul>`;
 }
 
 $('#fFile').addEventListener('change', e => { S.file = e.target.value; renderLogins(); });
@@ -960,7 +1258,8 @@ $('#fFileDel').addEventListener('click', () => {
 });
 
 $('#v-logins').addEventListener('click', e => {
-  const t = e.target.closest('[data-corp],[data-rename],[data-act],[data-sortby]'); if(!t) return;
+  const t = e.target.closest('[data-view],[data-corp],[data-rename],[data-act],[data-sortby]'); if(!t) return;
+  if(t.dataset.view){ S.view = t.dataset.view; S.corp = 'all'; S.file = 'all'; S.note = 'all'; S.shown.clear(); return renderLogins(); }
   const V = S.vault;
   if(t.dataset.corp !== undefined){ S.corp = t.dataset.corp; S.file = 'all'; S.note = 'all'; S.shown.clear(); return renderLogins(); }
   if(t.dataset.sortby){ const k = t.dataset.sortby; if(S.sort === k) S.dir *= -1; else { S.sort = k; S.dir = 1; } return renderLogins(); }
@@ -973,7 +1272,12 @@ $('#v-logins').addEventListener('click', e => {
   }
   const act = t.dataset.act;
   if(act === 'import') return $('#csvInput').click();
+  if(act === 'selall'){ const all = (S.rows || []).every(l => S.sel.has(l.id)); (S.rows || []).forEach(l => all ? S.sel.delete(l.id) : S.sel.add(l.id)); return renderLogins(); }
   const id = t.closest('[data-id]')?.dataset.id, l = V.logins.find(x => x.id === id); if(!l) return;
+  if(act === 'sel'){ S.sel.has(id) ? S.sel.delete(id) : S.sel.add(id); return renderLogins(); }
+  if(act === 'otp'){ totp(l.totp).then(r => r ? copy(r.code, '2FA code') : toast('This 2FA key is invalid. Edit the login to fix it.', true)); return; }
+  if(act === 'go'){ const href = safeHref(l.url); copy(l.password, 'Password'); if(href) window.open(href, '_blank', 'noopener,noreferrer'); return; }
+  if(act === 'fav'){ l.fav = !l.fav; save(false); renderLogins(); return toast(l.fav ? 'Added to favorites.' : 'Removed from favorites.'); }
   if(act === 'cu') copy(l.username, 'Username');
   if(act === 'cp') copy(l.password, 'Password');
   if(act === 'rv'){ S.shown.has(id) ? S.shown.delete(id) : S.shown.add(id); renderLogins(); }
@@ -996,15 +1300,35 @@ function loginDialog(l){
     <label class="f">Website<input class="inp" name="url" value="${esc(l.url)}" placeholder="example.com" spellcheck="false"></label>
     <label class="f">Username or email<input class="inp" name="username" value="${esc(l.username)}" spellcheck="false" autocapitalize="off"></label>
     <label class="f">Password<div class="pw-wrap"><input class="inp mono" type="password" name="password" value="${esc(l.password)}" spellcheck="false" autocomplete="new-password">
-      <div class="tools"><button type="button" class="ib" data-peek2="password" aria-label="Show password">${icon('eye')}</button><button type="button" class="ib" data-gen aria-label="Generate strong password">${icon('dice')}</button></div></div></label>
+      <div class="tools"><button type="button" class="ib" data-peek2="password" aria-label="Show password">${icon('eye')}</button><button type="button" class="ib" data-gen aria-label="Generate strong password">${icon('dice')}</button></div></div>
+      <div class="meter" aria-hidden="true"><i id="mBar"></i></div><span id="mLbl" class="mlbl"></span></label>
+    <label class="f">2FA setup key (optional)<div class="pw-wrap"><input class="inp mono" type="password" name="totp" value="${esc(l.totp || '')}" spellcheck="false" autocomplete="off" placeholder="Base32 key or otpauth:// link"><div class="tools"><button type="button" class="ib" data-peek2="totp" aria-label="Show 2FA key">${icon('eye')}</button></div></div></label>
+    ${(l.history || []).length ? `<details class="hist"><summary>Previous passwords (${l.history.length})</summary><ul>${l.history.map((h, i) => `<li><span class="mono" data-h="${i}">••••••••</span><span class="muted">until ${new Date(h.at).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}</span><button type="button" class="ib" data-hrev="${i}" aria-label="Show">${icon('eye')}</button><button type="button" class="ib" data-copy="${esc(h.p)}" data-label="Old password" aria-label="Copy">${icon('copy')}</button><button type="button" class="btn" data-hres="${i}" style="padding:4px 10px">Restore</button></li>`).join('')}</ul></details>` : ''}
     <label class="f">Note<textarea class="inp" name="notes" rows="2">${esc(l.notes)}</textarea></label>
+    <div class="row2"><label class="ack"><input type="checkbox" name="social"${socialOf(l) ? ' checked' : ''}>Social media account</label><label class="ack"><input type="checkbox" name="fav"${l.fav ? ' checked' : ''}>Favorite</label></div>
     <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="save">${isNew ? 'Add login' : 'Save changes'}</button></div>`,
   async fd => {
     const rec = { name:clean(fd.get('name')), url:clean(fd.get('url')), username:clean(fd.get('username')), password:String(fd.get('password') || ''), notes:String(fd.get('notes') || '').trim(), fileId:String(fd.get('fileId') || 'manual') };
     rec.corp = clean(fd.get('corp')) || corpOf(rec);
-    if(isNew) V.logins.push({ id:uid(), added:Date.now(), ...rec }); else Object.assign(l, rec);
+    const wantSoc = fd.get('social') === 'on', autoSoc = !!socialOf({ ...rec, social:undefined });
+    rec.social = wantSoc === autoSoc ? undefined : wantSoc; rec.fav = fd.get('fav') === 'on';
+    rec.totp = String(fd.get('totp') || '').trim();
+    if(rec.totp && !parseTotp(rec.totp)){ toast("That 2FA key isn't valid. Paste the setup key (letters A–Z and 2–7) or the otpauth:// link.", true); return false; }
+    if(!isNew && l.password && rec.password !== l.password){ rec.history = [{ p:l.password, at:Date.now() }, ...(l.history || [])].slice(0, 10); rec.pwChanged = Date.now(); }
+    if(isNew) V.logins.push({ id:uid(), added:Date.now(), pwChanged:Date.now(), ...rec }); else Object.assign(l, rec);
     await save(); render(); toast(isNew ? 'Login added.' : 'Changes saved.');
   });
+  const pwI = dform.querySelector('[name=password]');
+  const meter = () => { const p = pwI.value, b = pwBits(p), weak = isWeak(p), dup = p && S.vault.logins.some(x => x !== l && x.password === p);
+    const lvl = !p ? 0 : weak ? 1 : b < 70 ? 2 : 3;
+    $('#mBar').style.width = ['0%','33%','66%','100%'][lvl]; $('#mBar').dataset.lvl = lvl;
+    $('#mLbl').textContent = !p ? '' : (['','Weak','Fair','Strong'][lvl] + (dup ? ' · also used on another account' : '')); };
+  dform.onclick = e => {
+    const r = e.target.closest('[data-hrev]'), rs = e.target.closest('[data-hres]');
+    if(r){ const el = dform.querySelector(`[data-h="${r.dataset.hrev}"]`), on = el.dataset.on === '1'; el.textContent = on ? '••••••••' : l.history[+r.dataset.hrev].p; el.dataset.on = on ? '' : '1'; }
+    if(rs){ pwI.value = l.history[+rs.dataset.hres].p; pwI.type = 'text'; meter(); toast('Old password restored into the field. Save to keep it.'); }
+  };
+  pwI.addEventListener('input', meter); dform.querySelector('[data-gen]').addEventListener('click', () => setTimeout(meter, 0)); meter();
 }
 
 /* ============ CARDS ============ */
@@ -1113,13 +1437,14 @@ $('#noteList').addEventListener('click', async e => {
 
 /* ============ SETTINGS ============ */
 function renderSettings(){
+  setSyncStatus(SYNC.status === 'checking' ? 'checking' : SYNC.ready ? (localSyncOn() ? 'synced' : 'off') : SYNC.status);
   const f = $('#pwForm'); if(!f.nu.value) f.nu.value = S.user;
   $('#rcStatus').textContent = S.meta.rc
     ? `A recovery key was created ${new Date(S.meta.rcAt).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})}. Use it on the lock screen under “Forgot password?”. Creating a new one stops the old one from working.`
     : 'No recovery key yet. Create one so you can get back in if you forget your password.';
   $('#rcForm').to.value = S.meta.rcTo.join('\n');
 }
-$('#autolock').addEventListener('change', async e => { S.vault.settings.autolock = +e.target.value; bump(); await save(); toast(`Auto-lock set to ${e.target.selectedOptions[0].text}.`); });
+$('#autolock').addEventListener('change', async e => { S.vault.settings.autolock = +e.target.value; bump(); await save(false); toast(`Auto-lock set to ${e.target.selectedOptions[0].text}.`); });
 
 $('#pwForm').addEventListener('submit', async e => {
   e.preventDefault(); const f = e.target, nu = f.nu.value.trim();
@@ -1146,7 +1471,7 @@ $('#rcNew').addEventListener('click', () => {
   confirmDialog('Create a new recovery key?', 'The key you emailed before will stop working. You\'ll get a new one to send.', 'Create new key', () => { setTimeout(() => newRecovery(false), 0); return false; });
 });
 
-$('#exportBtn').addEventListener('click', async () => { await save(); const data = store.get(VKEY); if(data) offerFile(`nightvault-backup-${todayKey()}.json`, data, 'Backup saved. Keep it somewhere safe.'); });
+$('#exportBtn').addEventListener('click', backupNow);
 $('#restoreBtn').addEventListener('click', () => $('#restoreInput').click());
 $('#restoreInput').addEventListener('change', async e => {
   const file = e.target.files[0]; e.target.value = ''; if(!file) return;
@@ -1154,21 +1479,249 @@ $('#restoreInput').addEventListener('change', async e => {
   const ok = b && b.iv && b.ct && (b.v === 2 ? b.pw && b.pw.salt : b.salt && b.iter);
   if(!ok) return toast("That file isn't a Nightvault backup.", true);
   confirmDialog('Restore this backup?', `The vault on this device will be replaced by <b>${esc(file.name)}</b>. Unlock it with the password${b.rc ? ' or recovery key' : ''} it was made with.`, 'Replace and lock', () => {
-    store.set(VKEY, JSON.stringify(b)); store.del(FKEY); lock('Backup restored. Unlock to continue.');
+    b.rev = Math.max(b.rev || 0, (SYNC.remote && SYNC.remote.rev) || 0, (readVault() || {}).rev || 0) + 1; b.at = Date.now(); b.sync = localSyncOn();
+    store.set(VKEY, JSON.stringify(b)); store.del(FKEY); if(b.sync) schedulePush(); lock('Backup restored. Unlock to continue.');
   });
 });
 $('#wipeBtn').addEventListener('click', () => {
-  openDialog(`<h3>Delete the vault?</h3><p class="muted" style="margin:0">Every login, card and note on this device is erased, and your recovery key stops being useful. Type <b>DELETE</b> to confirm.</p>
+  openDialog(`<h3>Delete the vault?</h3><p class="muted" style="margin:0">Every login, card and note on this device is erased, plus the synced copy if sync is on. Your recovery key stops being useful. Type <b>DELETE</b> to confirm.</p>
     <input class="inp" name="c" autocomplete="off" required>
     <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn danger solid" value="ok">Delete forever</button></div>`,
-  fd => { if(fd.get('c') !== 'DELETE'){ toast('Type DELETE in capitals to confirm.', true); return false; } store.del(VKEY); store.del(FKEY); lock('Vault deleted.'); });
+  fd => { if(fd.get('c') !== 'DELETE'){ toast('Type DELETE in capitals to confirm.', true); return false; } const wasSync = localSyncOn(); store.del(VKEY); store.del(FKEY); if(wasSync) remoteOff().catch(() => {}); lock('Vault deleted.'); });
 });
+
+/* ============ ENCRYPTED SYNC ============
+   Only the already-encrypted vault (the same ciphertext kept in this browser) is uploaded,
+   into this account's private storage for this page. It is split into chunks to fit the
+   per-document size limit. Nothing readable ever leaves the device. */
+const DEV_KEY = 'nightvault.device';
+const DEV = store.get(DEV_KEY) || (() => { const d = uid(); store.set(DEV_KEY, d); return d; })();
+const SYNC = { db:null, uid:null, ready:false, pushing:false, pending:false, remote:null, status:'checking', at:0, pushT:null };
+const CHUNK = 180000;
+let syncResolve; const syncChecked = new Promise(r => syncResolve = r);
+setTimeout(() => syncResolve && syncResolve(), 6000);
+const sdoc = name => SYNC.db.doc(`data/users/${SYNC.uid}/${name}`);
+const localSyncOn = () => { const v = readVault(); return !!(v && v.sync); };
+
+function setSyncStatus(st, at){
+  SYNC.status = st; if(at) SYNC.at = at;
+  const on = localSyncOn();
+  const txt = { checking:'Checking sync…', unavailable:'Sync isn’t available in this view.', error:'Sync hit a problem. It will retry on your next change.', full:'Sync storage is full.', syncing:'Syncing…' }[st]
+    || (on ? `Synced${SYNC.at ? ' ' + timeAgo(SYNC.at) : ''}` : 'Sync is off');
+  const line = $('#syncLine'); if(line) line.textContent = txt;
+  const s = $('#syncStatus'); if(s) s.textContent = on ? txt + '. Changes upload a moment after you make them, and your other devices update automatically.' : (st === 'unavailable' ? txt + ' Open this page on claude.ai while signed in.' : 'Sync is off. This vault lives only in this browser.');
+  const b = $('#syncToggle'); if(b){ b.textContent = on ? 'Turn off sync' : 'Turn on sync'; b.disabled = !SYNC.ready; b.className = on ? 'btn danger' : 'btn primary'; }
+}
+function timeAgo(t){ const s = Math.round((Date.now() - t) / 1000); if(s < 45) return 'just now'; const m = Math.round(s / 60); if(m < 60) return `${m} min ago`; const h = Math.round(m / 60); if(h < 24) return `${h} h ago`; return new Date(t).toLocaleDateString(); }
+setInterval(() => { if(SYNC.status === 'synced') setSyncStatus('synced'); }, 30000);
+
+async function initSync(){
+  try {
+    if(!(window.claude && window.claude.use)){ setSyncStatus('unavailable'); return syncResolve(); }
+    const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
+    if(!db || !user){ setSyncStatus('unavailable'); return syncResolve(); }
+    SYNC.db = db; SYNC.uid = await user.id();
+    if(!SYNC.uid){ setSyncStatus('unavailable'); return syncResolve(); }
+    SYNC.ready = true; setSyncStatus(localSyncOn() ? 'synced' : 'off');
+    let first = true;
+    sdoc('vault-meta').onSnapshot(async snap => {
+      await onRemoteMeta(snap);
+      if(first){ first = false; syncResolve(); }
+    }, () => { setSyncStatus('error'); syncResolve(); });
+  } catch(e){ setSyncStatus('unavailable'); syncResolve(); }
+}
+
+function remoteIsNewer(d, v){
+  if(!v) return true;
+  const lr = v.rev || 0;
+  return d.rev > lr || (d.rev === lr && d.dev !== DEV && (d.at || 0) > (v.at || 0));
+}
+async function onRemoteMeta(snap){
+  if(snap.metadata && snap.metadata.hasPendingWrites) return;
+  const v = readVault();
+  if(!snap.exists){ SYNC.remote = null; if(v && v.sync && SYNC.ready) schedulePush(); setSyncStatus(v && v.sync ? 'synced' : 'off'); return; }
+  const d = snap.data(); SYNC.remote = d;
+  if(d.off){
+    if(v && v.sync && (d.at || 0) > (v.at || 0)){
+      if(S.key){ S.meta.sync = false; await save(false); } else { v.sync = false; store.set(VKEY, JSON.stringify(v)); }
+      toast('Sync was turned off on another device.');
+    }
+    return setSyncStatus('off');
+  }
+  if(remoteIsNewer(d, v)){ if(!v || v.sync) await pull(d); }
+  else if(v && v.sync && ((v.rev || 0) > d.rev)) schedulePush();
+  setSyncStatus(localSyncOn() ? 'synced' : 'off', d.at);
+}
+
+async function pull(d, tries = 0){
+  try {
+    const parts = [];
+    for(let i = 0; i < d.n; i++){ const s = await sdoc(`vault-${i}`).get(); const x = s.exists ? s.data() : null; if(!x || x.rev !== d.rev) throw new Error('partial'); parts.push(x.part); }
+    const str = parts.join(''), blob = JSON.parse(str);
+    if(blob.rev !== d.rev) throw new Error('mismatch');
+    if(S.key){
+      try {
+        const data = await decryptJSON(S.key, blob.iv, blob.ct);
+        S.vault = normalize(data); S.meta = metaOf(blob); store.set(VKEY, str); render(); renderNudge();
+        toast('Updated with changes from your other device.');
+      } catch(e){ store.set(VKEY, str); lock('Your synced vault was replaced on another device. Unlock it with that password.'); }
+    } else {
+      const wasSetup = !$('#setupForm').hidden; store.set(VKEY, str);
+      if(wasSetup || !$('#lock').hidden && $('#unlockForm').hidden && $('#recoverForm').hidden) showLock('unlock');
+      if(wasSetup) $('#lockSub').textContent = 'Found your synced vault. Unlock it with your username and master password.';
+    }
+  } catch(e){ if(tries < 3) setTimeout(() => pull(d, tries + 1), 1500 * (tries + 1)); else setSyncStatus('error'); }
+}
+
+function schedulePush(){ if(!SYNC.ready) return; clearTimeout(SYNC.pushT); SYNC.pushT = setTimeout(push, 800); }
+async function push(){
+  if(SYNC.pushing){ SYNC.pending = true; return; }
+  const str = store.get(VKEY); if(!str) return;
+  const v = JSON.parse(str); if(!v.sync) return;
+  SYNC.pushing = true; setSyncStatus('syncing');
+  try {
+    const parts = []; for(let i = 0; i < str.length; i += CHUNK) parts.push(str.slice(i, i + CHUNK));
+    for(let i = 0; i < parts.length; i++) await sdoc(`vault-${i}`).set({ part:parts[i], rev:v.rev });
+    const prevN = SYNC.remote && SYNC.remote.n || 0, meta = { rev:v.rev, n:parts.length, at:v.at || Date.now(), dev:DEV };
+    await sdoc('vault-meta').set(meta); SYNC.remote = meta;
+    for(let i = parts.length; i < prevN; i++) await sdoc(`vault-${i}`).delete();
+    setSyncStatus('synced', meta.at);
+  } catch(e){ setSyncStatus(e && e.code === 'quota_exceeded' ? 'full' : 'error'); }
+  finally { SYNC.pushing = false; if(SYNC.pending){ SYNC.pending = false; schedulePush(); } }
+}
+async function remoteOff(){
+  if(!SYNC.ready) return;
+  const n = SYNC.remote && SYNC.remote.n || 0;
+  await sdoc('vault-meta').set({ off:true, at:Date.now(), dev:DEV, rev:0, n:0 }); SYNC.remote = { off:true };
+  for(let i = 0; i < n; i++) await sdoc(`vault-${i}`).delete();
+}
+$('#syncToggle').addEventListener('click', () => {
+  if(!SYNC.ready) return;
+  if(S.meta.sync){
+    confirmDialog('Turn off sync?', 'The synced copy is deleted. Each device keeps the vault it has now, but changes stop moving between them.', 'Turn off sync', async () => {
+      S.meta.sync = false; await save(false); try { await remoteOff(); } catch(e){} setSyncStatus('off'); toast('Sync turned off.');
+    });
+  } else {
+    openDialog(`<h3>Turn on sync?</h3>
+      <p class="muted" style="margin:0">Your vault uploads to your Claude account's private storage for this page, still encrypted. Only your password or recovery key can unlock it, so nobody else can read it, including Anthropic.</p>
+      <p class="muted" style="margin:0">On your phone, open this page while signed in to the same Claude account and unlock with the same username and password.</p>
+      ${SYNC.remote && !SYNC.remote.off ? '<p class="warn" style="margin:0">A synced vault already exists. Turning sync on here replaces it with this device\'s vault.</p>' : ''}
+      <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Turn on sync</button></div>`,
+    async () => { S.meta.sync = true; S.meta.rev = Math.max(S.meta.rev || 0, SYNC.remote && SYNC.remote.rev || 0); await save(false); toast('Sync turned on. Uploading your encrypted vault…'); });
+  }
+});
+
+/* ============ TWO-FACTOR CODES (TOTP) ============ */
+function b32std(s){ s = String(s).toUpperCase().replace(/[\s=-]/g, ''); const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567'; let bits = 0, val = 0; const out = [];
+  for(const c of s){ const i = A.indexOf(c); if(i < 0) return null; val = ((val << 5) | i) & 0xFFFF; bits += 5; if(bits >= 8){ out.push((val >>> (bits - 8)) & 255); bits -= 8; } }
+  return out.length ? new Uint8Array(out) : null; }
+function parseTotp(raw){
+  raw = String(raw || '').trim(); if(!raw) return null;
+  let secret = raw, digits = 6, period = 30, algo = 'SHA-1';
+  if(/^otpauth:/i.test(raw)){ try { const u = new URL(raw); secret = u.searchParams.get('secret') || ''; digits = +u.searchParams.get('digits') || 6; period = +u.searchParams.get('period') || 30;
+    const a = (u.searchParams.get('algorithm') || 'SHA1').toUpperCase(); algo = a === 'SHA256' ? 'SHA-256' : a === 'SHA512' ? 'SHA-512' : 'SHA-1'; } catch(e){ return null; } }
+  const key = b32std(secret); return key && digits >= 6 && digits <= 8 ? { key, digits, period, algo } : null;
+}
+const otpCache = new Map();
+async function totp(raw, now = Date.now() / 1000){
+  const p = parseTotp(raw); if(!p) return null;
+  const step = Math.floor(now / p.period), ck = raw + '|' + step; let code = otpCache.get(ck);
+  if(!code){
+    const k = await crypto.subtle.importKey('raw', p.key, { name:'HMAC', hash:p.algo }, false, ['sign']);
+    const msg = new DataView(new ArrayBuffer(8)); msg.setUint32(0, Math.floor(step / 2 ** 32)); msg.setUint32(4, step >>> 0);
+    const h = new Uint8Array(await crypto.subtle.sign('HMAC', k, msg.buffer)), o = h[h.length - 1] & 15;
+    const bin = ((h[o] & 127) << 24) | (h[o+1] << 16) | (h[o+2] << 8) | h[o+3];
+    code = String(bin % 10 ** p.digits).padStart(p.digits, '0');
+    if(otpCache.size > 300) otpCache.clear(); otpCache.set(ck, code);
+  }
+  return { code, left: p.period - Math.floor(now % p.period) };
+}
+setInterval(async () => {
+  if(!S.key || S.tab !== 'logins') return;
+  for(const el of $$('[data-otp]')){
+    const l = S.vault.logins.find(x => x.id === el.dataset.otp); if(!l) continue;
+    const r = await totp(l.totp).catch(() => null);
+    el.textContent = r ? `${r.code.slice(0, r.code.length/2)} ${r.code.slice(r.code.length/2)} · ${r.left}s` : '2FA key invalid';
+  }
+}, 1000);
+
+/* ============ SECURE NOTES ============ */
+function renderSecure(){
+  const list = S.vault.secure, q = ($('#sq').value || '').trim().toLowerCase();
+  const rows = list.filter(n => !q || [n.title, n.cat, n.body].join(' ').toLowerCase().includes(q)).sort((a,b) => (b.updated || 0) - (a.updated || 0));
+  $('#cSecure').textContent = list.length || '';
+  $('#secureList').innerHTML = !list.length
+    ? `<div class="empty"><h3>No secure notes yet</h3><p>Keep things that aren't logins here: Wi-Fi passwords, license keys, 2FA backup codes, client details.</p><button class="btn primary" data-newnote>${icon('plus')}New note</button></div>`
+    : !rows.length ? `<div class="empty"><h3>Nothing matches</h3><p>Try another search.</p></div>`
+    : `<div class="snotes">${rows.map(n => `<button class="snote" data-sid="${n.id}"><span class="st">${esc(n.title)}</span>${n.cat ? `<span class="pill">${esc(n.cat)}</span>` : ''}<span class="sp">Hidden · ${(n.body || '').split('\n').length} line${(n.body || '').split('\n').length === 1 ? '' : 's'}</span><span class="sd">Updated ${new Date(n.updated || 0).toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' })}</span></button>`).join('')}</div>`;
+}
+$('#sq').addEventListener('input', renderSecure);
+$('#v-secure').addEventListener('click', e => {
+  if(e.target.closest('[data-newnote]')) return secureDialog(null);
+  const b = e.target.closest('[data-sid]'); if(!b) return;
+  const n = S.vault.secure.find(x => x.id === b.dataset.sid); if(n) secureView(n);
+});
+function secureView(n){
+  openDialog(`<h3>${esc(n.title)}</h3>${n.cat ? `<span class="pill" style="justify-self:start">${esc(n.cat)}</span>` : ''}
+    <div class="sbody mono" id="sbody" data-hidden="1">Hidden. Select Show to read it.</div>
+    <div class="btns"><button type="button" class="btn" id="sShow">${icon('eye')}Show</button><button type="button" class="btn" data-copy="${esc(n.body)}" data-label="Note">${icon('copy')}Copy</button></div>
+    <div class="foot"><button type="button" class="btn danger left" id="sDel">${icon('trash')}Delete</button><button type="button" class="btn" id="sEdit">${icon('edit')}Edit</button><button class="btn primary" value="cancel" formnovalidate>Done</button></div>`, null);
+  dform.onclick = e => {
+    if(e.target.closest('#sShow')){ const el = $('#sbody'), hid = el.dataset.hidden === '1'; el.textContent = hid ? n.body : 'Hidden. Select Show to read it.'; el.dataset.hidden = hid ? '' : '1'; e.target.closest('#sShow').innerHTML = icon(hid ? 'eyeoff' : 'eye') + (hid ? 'Hide' : 'Show'); }
+    if(e.target.closest('#sEdit')) secureDialog(n);
+    if(e.target.closest('#sDel')) confirmDialog('Delete note?', `<b>${esc(n.title)}</b> will be removed from the vault.`, 'Delete note', async () => { S.vault.secure = S.vault.secure.filter(x => x.id !== n.id); await save(); renderSecure(); toast('Note deleted.'); });
+  };
+}
+function secureDialog(n){
+  const isNew = !n; n = n || { title:'', cat:'', body:'' };
+  const cats = [...new Set(S.vault.secure.map(x => x.cat).filter(Boolean))].sort(cmp);
+  openDialog(`<h3>${isNew ? 'New secure note' : 'Edit note'}</h3>
+    <label class="f">Title<input class="inp" name="title" value="${esc(n.title)}" required placeholder="Office Wi-Fi"></label>
+    <label class="f">Category (optional)<input class="inp" name="cat" value="${esc(n.cat)}" list="catDL" placeholder="Wi-Fi, License, 2FA backup codes…"></label>
+    <datalist id="catDL">${cats.map(c => `<option value="${esc(c)}">`).join('')}</datalist>
+    <label class="f">Note<textarea class="inp mono" name="body" rows="8" spellcheck="false">${esc(n.body)}</textarea></label>
+    <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">${isNew ? 'Save note' : 'Save changes'}</button></div>`,
+  async fd => {
+    const rec = { title:clean(fd.get('title')), cat:clean(fd.get('cat')), body:String(fd.get('body') || ''), updated:Date.now() };
+    if(isNew) S.vault.secure.push({ id:uid(), ...rec }); else Object.assign(n, rec);
+    await save(); renderSecure(); toast(isNew ? 'Note saved.' : 'Changes saved.');
+  });
+}
+$('#newSecure').addEventListener('click', () => secureDialog(null));
+
+/* ============ BULK ACTIONS ============ */
+function renderBulk(){
+  const live = new Set(S.vault ? S.vault.logins.map(l => l.id) : []);
+  [...S.sel].forEach(id => { if(!live.has(id)) S.sel.delete(id); });
+  const n = S.sel.size; $('#bulk').hidden = !n; $('#bulkN').textContent = `${n} selected`;
+}
+$('#bulk').addEventListener('click', e => {
+  const b = e.target.closest('[data-bulk]'); if(!b) return;
+  const V = S.vault, picked = V.logins.filter(l => S.sel.has(l.id)), act = b.dataset.bulk;
+  if(act === 'all'){ (S.rows || []).forEach(l => S.sel.add(l.id)); return renderLogins(); }
+  if(act === 'clear'){ S.sel.clear(); return renderLogins(); }
+  if(act === 'fav' || act === 'unfav'){ picked.forEach(l => l.fav = act === 'fav'); save(false); renderLogins(); return toast(`${picked.length} login${picked.length>1?'s':''} ${act === 'fav' ? 'added to' : 'removed from'} favorites.`); }
+  if(act === 'move') return openDialog(`<h3>Move ${picked.length} login${picked.length>1?'s':''}</h3>
+    <label class="f">To corp<input class="inp" name="corp" list="corpDL4" required placeholder="Corp name"></label><datalist id="corpDL4">${corpList().map(c => `<option value="${esc(c)}">`).join('')}</datalist>
+    <div class="foot"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Move</button></div>`,
+    async fd => { const c = clean(fd.get('corp')); if(!c) return false; picked.forEach(l => l.corp = c); S.sel.clear(); await save(); render(); toast(`Moved ${picked.length} to ${c}.`); });
+  if(act === 'del') return confirmDialog(`Delete ${picked.length} login${picked.length>1?'s':''}?`, 'They will be removed from the vault. Make sure you have a backup if you might need them.', 'Delete', async () => {
+    const ids = new Set(picked.map(l => l.id)); V.logins = V.logins.filter(l => !ids.has(l.id)); S.sel.clear(); await save(); render(); toast(`Deleted ${ids.size} login${ids.size>1?'s':''}.`); });
+});
+
+/* ============ SHORTCUTS & LOCK ON LEAVE ============ */
+addEventListener('keydown', e => {
+  if(!S.key || dlg.open) return;
+  if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){ e.preventDefault(); if(S.tab !== 'logins') setTab('logins'); const q = $('#q'); q.focus(); q.select(); }
+});
+document.addEventListener('visibilitychange', () => { if(document.hidden && S.key && S.vault && S.vault.settings.lockOnHide) lock('Locked when you left the page.'); });
+$('#lockOnHide').addEventListener('change', async e => { S.vault.settings.lockOnHide = e.target.checked; await save(false); toast(e.target.checked ? 'The vault now locks when you switch away.' : 'The vault stays open when you switch away, until auto-lock.'); });
 
 /* ---------- start ---------- */
 if(!window.crypto || !crypto.subtle){
   $('#lockSub').textContent = "This browser can't run the encryption Nightvault needs. Open it in a current version of Chrome, Safari, Firefox or Edge.";
   $('#fineprint').hidden = true;
-} else showLock();
+} else { showLock(); initSync(); }
 })();
 </script>
 </body>
